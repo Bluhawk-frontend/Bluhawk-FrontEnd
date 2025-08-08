@@ -6,13 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { Link } from "react-router-dom";
 import LogoSrc from "../assets/images/bluehawk-dark.png";
-import loginimg from "../assets/images/Getin.png"; // Login image
+import newSignupImage from "../assets/images/new-signup-image.jpg"; // Updated import (replace with your new image)
 
-
-
-
- 
-const SignUp = ({isOpen, setModalContent}) => {
+const SignUp = ({ isOpen, setModalContent }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID; // Added Google Client ID
   const navigate = useNavigate();
@@ -44,15 +40,15 @@ const SignUp = ({isOpen, setModalContent}) => {
   }, []);
 
   // Auto-hide password after 3 seconds
-    useEffect(() => {
-      if (showPassword || showReenterPassword) {
-        const timeout = setTimeout(() => {
-          setShowPassword(false);
-          setShowReenterPassword(false);
-        }, 3000);
-        return () => clearTimeout(timeout);
-      }
-    }, [showPassword, showReenterPassword]);
+  useEffect(() => {
+    if (showPassword || showReenterPassword) {
+      const timeout = setTimeout(() => {
+        setShowPassword(false);
+        setShowReenterPassword(false);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [showPassword, showReenterPassword]);
 
   // Initialize Google Sign-In
   useEffect(() => {
@@ -118,7 +114,6 @@ const SignUp = ({isOpen, setModalContent}) => {
     let filteredValue = value; 
     if(id === 'verification_key'){
         filteredValue = value.replace(/\D/g, ''); 
-        
     }
     setFormData((prevData) => ({ ...prevData, [id]: filteredValue }));
     setErrors({});
@@ -129,7 +124,6 @@ const SignUp = ({isOpen, setModalContent}) => {
     const newErrors = {};
     if (!email) {
       newErrors.email = "Please enter your email.";
-    // } else if (!/\S+@\S+\.\S+/.test(email)) {
     } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i.test(email)) {
       newErrors.email = "Please enter a valid email address.";
     }
@@ -170,10 +164,6 @@ const SignUp = ({isOpen, setModalContent}) => {
       }
     } catch (error) {
       console.error("Signup error:", error);
-      // console.log(error.response?.data?.message);
-      // alert(
-      //  "Error: "+(error?.message || "An unexpected error occurred. Please try again.")
-      // );
       setMessage('Error: ' + (error?.response?.data?.message || error?.message|| 'An unexpected error occurred. Please try again.'));
       setLoading(false);
     }
@@ -198,9 +188,6 @@ const SignUp = ({isOpen, setModalContent}) => {
       }
     } catch (error) {
       console.error("Verification error:", error);
-      // console.log(error.response?.data?.message);
-
-      // alert("Error: "+(error?.message || "Verification failed. Please try again."));
       setMessage('Error: ' + (error?.response?.data?.message || error?.message|| 'Verification failed. Please try again.'));
       setLoading(false);
     }
@@ -215,124 +202,121 @@ const SignUp = ({isOpen, setModalContent}) => {
   };
   
 
-
-  const renderInputField = (id, label, showPasswordState, toggleFunction, type = "text", placeholder = "") => (
-    <div className="mb-4">
-      <label htmlFor={id} className="block text-gray-700 text-sm font-medium mb-2">
-        {label}:
-      </label>
+   const renderInputField = (id, label, showPasswordState, toggleFunction, type = "text", placeholder = "") => (
+  <div className="relative">
+    <label htmlFor={id} className="block text-white text-sm mb-1">
+      {label}:
+    </label>
+    <div className="relative">
       <input
         type={type}
         id={id}
         value={formData[id]}
         onChange={handleInputChange}
-        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        placeholder={placeholder}  
+        className="w-full px-4 py-2 border border-white text-sm text-white bg-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-[#00b7ff] placeholder-gray-300"
+        placeholder={placeholder}
       />
-
-      <button
-        type="button"
-        className="absolute inset-y-0 right-3 flex items-center text-gray-500"
-        onClick={() => toggleFunction(id)}
-      >
-        {showPasswordState ? <FaEye /> : <FaEyeSlash />}
-      </button>
-
-      {errors[id] && <p className="text-red-500 text-sm mt-1">{errors[id]}</p>}
+      {(id === "password" || id === "reenter_password") && (
+        <button
+          type="button"
+          className="absolute inset-y-0 right-4 flex items-center text-gray-300"
+          onClick={() => toggleFunction(id)}
+        >
+          {showPasswordState ? <FaEye /> : <FaEyeSlash />}
+        </button>
+      )}
     </div>
-  );
+    {errors[id] && <p className="text-red-400 text-xs mt-1">{errors[id]}</p>}
+  </div>
+);
+
+
 
   return (
-    <div className={`${isOpen ? "" : "h-screen"} flex justify-center items-center bg-[#010314]`}>
-      <div className="h-[600px] w-[800px] text-black relative bg-lightWhite flex shadow-lg rounded-lg overflow-hidden max-w-4xl sm:max-w-4xl">
-        <div className="w-full sm:w-1/2 p-4 h-full flex flex-col justify-between">
-          <div>
-            <img
-              src={LogoSrc}
-              alt="BluHawk Logo"
-              className="h-14 w-auto"
-              onError={(e) => {
-                console.error("Failed to load logo:", LogoSrc);
-                e.target.src = "/fallback-logo.png";
-              }}
-            />
-            <h2 className="text-2xl font-semibold mb-2 text-gray-800">Sign Up</h2>
-            {verificationMsg && <p className="text-green-500 text-sm mb-4">{verificationMsg}</p>}
-            {message && (
-              <p className={`${message.includes("Error") ? "text-red-500" : "text-green-500"} text-sm pb-2`}>
-                {message}
-              </p>
-            )}
-          </div>
+    <div
+      className={`${isOpen ? "" : "h-screen"} flex justify-center items-center`}
+      style={{
+        backgroundImage: `url(${newSignupImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div className="h-[600px] w-[800px] text-black relative flex justify-center items-center max-w-4xl sm:max-w-4xl">
+        <div className="absolute inset-0 bg-black bg-opacity-50 z-0"></div> {/* Overlay for readability */}
+         <div className="w-[400px] sm:w-[420px] p-8 bg-[#083c70] border border-white rounded-md shadow-lg relative z-10 text-white">
+  <div className="mb-6">
+    <img
+      src={LogoSrc}
+      alt="BluHawk Logo"
+      className="h-12 w-auto mx-auto mb-4"
+    />
+    <h2 className="text-xl font-semibold text-center">Sign Up</h2>
+  </div>
 
-          <form onSubmit={showVerificationField ? handleVerificationSubmit : handleSubmit} className="flex flex-col h-[75%] justify-between">
-            {!showVerificationField ? (
-              <div>
-                {renderInputField("email", "Email", false, null, "email", "Enter your email")}
-                {renderInputField("password", "Password", showPassword, togglePasswordVisibility, showPassword ? "text" : "password", "Enter your password")}
-                {renderInputField(
-                  "reenter_password",
-                  "Confirm Password",
-                  showReenterPassword,
-                  togglePasswordVisibility,
-                  showReenterPassword ? "text" : "password",
-                  "Confirm your password"
-                )}
-              </div>
-            ) : (
-              renderInputField("verification_key", "Verification Code", false, null, "text", "Enter verification code")
-            )}
+  {verificationMsg && (
+    <p className="text-green-400 text-sm text-center mb-2">{verificationMsg}</p>
+  )}
+  {message && (
+    <p className={`${message.includes("Error") ? "text-red-400" : "text-green-400"} text-sm text-center mb-2`}>
+      {message}
+    </p>
+  )}
 
-            <div className="flex flex-col items-center">
-              <button
-                ref={signUpButtonRef}
-                type="submit"
-                className="w-full bg-denimBlue text-white py-2 rounded-md hover:bg-blue-700 transition"
-                disabled={loading}
-              >
-                {loading ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="animate-spin h-5 w-5 border-t-2 border-b-2 border-white rounded-full"></span>
-                    <span>Loading...</span>
-                  </div>
-                ) : showVerificationField ? (
-                  "Verify & Complete Signup"
-                ) : (
-                  "Sign Up"
-                )}
-              </button>
+  <form onSubmit={showVerificationField ? handleVerificationSubmit : handleSubmit} className="flex flex-col gap-4">
+    {!showVerificationField ? (
+      <>
+        {renderInputField("email", "Email", false, null, "email", "Enter your email")}
+        {renderInputField("password", "Password", showPassword, togglePasswordVisibility, showPassword ? "text" : "password", "Enter your password")}
+        {renderInputField("reenter_password", "Confirm Password", showReenterPassword, togglePasswordVisibility, showReenterPassword ? "text" : "password", "Re-enter your password")}
+      </>
+    ) : (
+      renderInputField("verification_key", "Verification Code", false, null, "text", "Enter verification code")
+    )}
 
-              {!showVerificationField && (
-                <div className="mt-4 w-full flex justify-center">
-                  <div ref={googleButtonRef} className="w-full"></div>
-                </div>
-              )}
-            </div>
-          </form>
-
-          {!showVerificationField && (
-            <div>
-              {isOpen ? (<p className="mt-2 text-sm text-center text-gray-800">
-              Already have an account?
-                <span
-                  onClick={() => setModalContent("Sign-in")} // ✅ Only update content
-                  className="text-[#FE5E15] cursor-pointer hover:underline"
-                >
-                  Login
-                </span>
-              </p>) : ( <p className="text-sm text-center  mt-2">
-              Already have an account?{" "}
-              <Link to="/login" className="text-[#FE5E15] hover:underline">
-                Login
-              </Link>
-             </p>)}
-            </div>
-          )}
+    <button
+      ref={signUpButtonRef}
+      type="submit"
+      className="w-full bg-[#e60073] text-white py-2 rounded-full hover:bg-pink-600 transition text-lg font-semibold"
+      disabled={loading}
+    >
+      {loading ? (
+        <div className="flex items-center justify-center gap-2">
+          <span className="animate-spin h-5 w-5 border-t-2 border-b-2 border-white rounded-full"></span>
+          <span>Loading...</span>
         </div>
+      ) : showVerificationField ? (
+        "Verify & Complete Signup"
+      ) : (
+        "Sign Up"
+      )}
+    </button>
 
-        <div className="hidden sm:block sm:flex w-1/2 bg-deepNavy items-center justify-center">
-          <img src={loginimg} alt="Sign Up" className="h-18 w-full" />
-        </div>
+    {!showVerificationField && (
+      <div className="mt-2 w-full flex justify-center">
+        <div ref={googleButtonRef} className="w-full"></div>
+      </div>
+    )}
+  </form>
+
+  {!showVerificationField && (
+    <p className="mt-4 text-sm text-center">
+      Already have an Account?{" "}
+      {isOpen ? (
+        <span
+          onClick={() => setModalContent("Sign-in")}
+          className="text-pink-400 cursor-pointer hover:underline"
+        >
+          Login
+        </span>
+      ) : (
+        <Link to="/login" className="text-pink-400 hover:underline">Login</Link>
+      )}
+    </p>
+  )}
+</div>
+
+
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ export default function Navbar() {
   const [showSubmenu, setShowSubmenu] = useState(false);
   const [showWildcardmenu, setShowWildcardmenu] = useState(false);
   const [showWeb3Menu, setShowWeb3Menu] = useState(false);
-  const logoSrc = "/bluhawk-blackbg.svg";
+  const logoSrc = "/bluhawk-blackbg.png";
 
   const handleNavigation = (path) => {
     setShowDropdown(false);

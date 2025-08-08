@@ -1,10 +1,20 @@
-import React, { useState,useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-// import HomeNavbar from "../components/HomeNavBar";
+import Cookies from "js-cookie"; // Added for token
+import { useNavigate } from "react-router-dom"; // Added for navigation
+import Footer from "../components/reusable/Footer";
+import HomeNavbar from "../components/HomeNavbar";
+import gridbackground from "../assets/images/grid-background.jpg";
+import lockImage from "../assets/images/lock.png"; // Add this line (adjust path as needed)
+import useTypingAnimation from "../hooks/useTypingAnimation";
+import FeedbackCard from "../components/FeedbackCard"; // adjust path if needed
+
+
+// Placeholder imports for images
 import man from "../assets/images/Man.png";
-import Link0 from "../assets/images/Link.png";
-import Link1 from "../assets/images/Link1.png";
-import Link2 from "../assets/images/Link2.png";
+import Link0 from "../assets/images/Link.jpg";
+import Link1 from "../assets/images/Link1.jpg";
+import Link2 from "../assets/images/Link2.jpg";
 import Group1 from "../assets/images/Group1.png";
 import Group2 from "../assets/images/Group2.png";
 import Group3 from "../assets/images/Group3.png";
@@ -30,35 +40,132 @@ import F6 from "../assets/images/F6.png";
 import F7 from "../assets/images/F7.png";
 import F8 from "../assets/images/F8.png";
 import bgCEO from "../assets/images/BG-CEO.png";
-import leftArrow from "../assets/images/Left Arrow.png";
-import rightArrow from "../assets/images/Right Arrow.png";
-import Cookies from "js-cookie"; // Added for token
-import { useNavigate } from "react-router-dom"; // Added for navigation
 
-import Footer from "../components/reusable/Footer";
-import HomeNavbar from "../components/HomeNavbar";
+// FeedbackCarousel Component
+ const FeedbackCarousel = ({ feedbacks }) => {
+  const [index, setIndex] = useState(0);
+  const carouselRef = useRef(null);
 
+  const cardsPerView = () => {
+    if (window.innerWidth >= 1024) return 3;
+    if (window.innerWidth >= 768) return 2;
+    return 1;
+  };
+
+  const [visibleCards, setVisibleCards] = useState(cardsPerView());
+
+  useEffect(() => {
+    const handleResize = () => {
+      setVisibleCards(cardsPerView());
+      setIndex(0); // Reset on resize
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const totalSlides = Math.ceil(feedbacks.length / visibleCards);
+
+  const updateTransform = (newIndex) => {
+    if (carouselRef.current) {
+      carouselRef.current.style.transition = "transform 0.5s ease-in-out";
+      const cardWidthPercent = 100 / visibleCards;
+      carouselRef.current.style.transform = `translateX(-${newIndex * cardWidthPercent}%)`;
+    }
+  };
+
+  const prevSlide = () => {
+    const newIndex = index === 0 ? totalSlides - 1 : index - 1;
+    setIndex(newIndex);
+    updateTransform(newIndex);
+  };
+
+  const nextSlide = () => {
+    const newIndex = index === totalSlides - 1 ? 0 : index + 1;
+    setIndex(newIndex);
+    updateTransform(newIndex);
+  };
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      const resetTransform = () => {
+        carouselRef.current.style.transition = "none";
+        const cardWidthPercent = 100 / visibleCards;
+        carouselRef.current.style.transform = `translateX(-${index * cardWidthPercent}%)`;
+      };
+      const currentRef = carouselRef.current;
+      currentRef.addEventListener("transitionend", resetTransform);
+      return () => currentRef.removeEventListener("transitionend", resetTransform);
+    }
+  }, [index, visibleCards]);
+
+  return (
+    <section className="bg-[#D9D9D9] py-16 px-4 flex flex-col items-center justify-center">
+      <div className="w-full max-w-7xl">
+        <h2 className="text-3xl font-bold text-[#9B4D4D] mb-2">Customer Feedback</h2>
+        <p className="text-gray-800 mb-10 max-w-2xl">
+          Our customers' thoughts are important to us, and their feedback helps us improve.
+        </p>
+
+        <div className="relative w-full flex items-center justify-center">
+          {/* Left Arrow */}
+          <button
+            className="absolute left-0 z-10 bg-white p-2 rounded-full shadow"
+            onClick={prevSlide}
+          >
+            <FaArrowLeft className="w-6 h-6 text-gray-700" />
+          </button>
+
+          {/* Card Track */}
+          <div className="flex overflow-hidden w-full justify-center px-10">
+            <div
+              ref={carouselRef}
+              className="flex w-full"
+              style={{ width: `${(feedbacks.length / visibleCards) * 100}%` }}
+            >
+              {feedbacks.map((item, i) => (
+                <div
+                  key={i}
+                  className="p-4"
+                  style={{ width: `${100 / feedbacks.length}%` }}
+                >
+                  <FeedbackCard name={item.name} feedback={item.feedback} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Arrow */}
+          <button
+            className="absolute right-0 z-10 bg-white p-2 rounded-full shadow"
+            onClick={nextSlide}
+          >
+            <FaArrowRight className="w-6 h-6 text-gray-700" />
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// HomePage Component
 const HomePage = () => {
-  // const [currentIndex, setCurrentIndex] = useState(0);
-  // const [selectedFeature, setSelectedFeature] = useState(securityFeatures[0]);
   const navigate = useNavigate(); // Added for navigation
   const token = Cookies.get('access_token'); // Added for token check
   const openModalFromNavbarRef = useRef(null); // Use ref to persist function
+  const securityLockText = useTypingAnimation("SECURITY LOCK", 150, 2000, true);
 
-  // Reference to store the openModal function from HomeNavbar2
+  // Reference to store the openModal function from HomeNavbar
   let openModalFromNavbar;
 
-  // Function to receive openModal from HomeNavbar2
+  // Function to receive openModal from HomeNavbar
   const handleOpenModalFromNavbar = (openModalFunc) => {
     openModalFromNavbar = openModalFunc; // Store the function reference
   };
 
-
   const handleGotoDashboardClick = () => {
-    if(token){
+    if (token) {
       navigate('/dashboard');
-    }
-    else{
+    } else {
       if (openModalFromNavbar) {
         openModalFromNavbar("Sign-in"); // Trigger the sign-in popup
       } else {
@@ -66,127 +173,50 @@ const HomePage = () => {
         navigate('/dashboard');
       }
     }
-    
-  }
-  
-  
+  };
+
   const features = [
-    { name: "Threat Intelligence", 
-      img: Link0,  
-      description: "Stay ahead of evolving cyber threats with real-time intelligence." 
-    },
-    { name: "System Audit", 
-      img: Link1, 
-      description: "Detect and eliminate malicious software to restore system integrity and performance." 
-    },
-    { name: "Malware Removal", 
-      img: Link2, 
-      description: "Analyze configurations and vulnerabilities to ensure optimal security posture."
-    },
+    { name: "Threat Intelligence", img: Link0, description: "Stay ahead of evolving cyber threats with real-time intelligence." },
+    { name: "System Audit", img: Link1, description: "Detect and eliminate malicious software to restore system integrity and performance." },
+    { name: "Malware Removal", img: Link2, description: "Analyze configurations and vulnerabilities to ensure optimal security posture." },
   ];
+
   const services = [
     { name: "Network Security", img: Group3 },
     { name: "Adversary Intelligence", img: Group1 },
-      { name: "Vulnerability Intelligence", img: Group2 },
+    { name: "Vulnerability Intelligence", img: Group2 },
   ];
+
   const secondRowServices = [
     { name: "Real-Time Monitoring", img: Group4 },
     { name: "Asset Analysis", img: Group5 },
   ];
+
   const thirdRowServices = [
     { name: "Threat Prioritization", img: Group6 },
     { name: "Automated Scanning", img: Group7 },
     { name: "MITRE ATT&CK Mapping", img: Group8 },
   ];
-  const feedbackData = [
-    {
-      id: 1,
-      name: "Edaa",
-      role: "General customer",
-      image: "https://randomuser.me/api/portraits/women/1.jpg",
-      rating: 5,
-      feedback:
-        "When replacing a multi-lined selection of text, the generated dummy text maintains the amount of lines.",
-    },
-    {
-      id: 2,
-      name: "Alex",
-      role: "Verified user",
-      image: "https://randomuser.me/api/portraits/men/1.jpg",
-      rating: 4,
-      feedback:
-        "The service was amazing! Highly recommended for secure transactions and fast processing.",
-    },
-    {
-      id: 3,
-      name: "Sophia",
-      role: "Customer",
-      image: "https://randomuser.me/api/portraits/women/2.jpg",
-      rating: 5,
-      feedback:
-        "Exceptional experience! The support team was very helpful and resolved my issues quickly.",
-    },
-    {
-      id: 4,
-      name: "Daniel",
-      role: "Premium user",
-      image: "https://randomuser.me/api/portraits/men/2.jpg",
-      rating: 4,
-      feedback: "Really smooth and secure platform. I trust this with all my data needs!",
-    },
-    {
-      id: 5,
-      name: "Dee",
-      role: "General customer",
-      image: "https://randomuser.me/api/portraits/women/1.jpg",
-      rating: 5,
-      feedback:
-        "When replacing a multi-lined selection of text, the generated dummy text maintains the amount of lines.",
-    },
+
+  const feedbacks = [
+    { name: "Revathi", feedback: "Great tool for replacing text! The dummy text keeps the layout perfect." },
+    { name: "Ramu", feedback: "The support team was friendly and fixed my problem fast." },
+    { name: "Pavitra", feedback: "Amazing service! Easy to use and very reliable." },
+    { name: "Suresh", feedback: "Clean interface, loved it!" },
+    { name: "Meena", feedback: "Super fast and accurate results. Highly recommend!" },
+    { name: "Raj", feedback: "Simple and smooth experience overall." },
   ];
+
   const testimonialData = [
     {
       id: 1,
-      quote:
-        "An cyber security multi-national firm is a security money of one or more experts. Provides more profit, We help your satéle to future life and then create the road. Grow money speedily without any risk.",
+      quote: "An cyber security multi-national firm is a security money of one or more experts. Provides more profit, We help your satéle to future life and then create the road. Grow money speedily without any risk.",
       name: "Jose Philip",
       role: "CEO",
       image: man,
     },
   ];
-  const cardsPerView = () => {
-    if (window.innerWidth >= 1024) return 3; // Large screens
-    if (window.innerWidth >= 768) return 2;  // Medium screens
-    return 1; // Small screens
-  };
-  const cardRefs = useRef([]);
-  
-  const [visibleCards, setVisibleCards] = useState(cardsPerView());
-  const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Update visible cards on window resize
-  useEffect(() => {
-    const handleResize = () => {
-      setVisibleCards(cardsPerView());
-      setCurrentIndex(0); // Reset to start on resize to avoid overflow
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const totalSlides = Math.ceil(feedbackData.length / visibleCards);
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? totalSlides - 1 : prevIndex - 1
-    );
-  };
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === totalSlides - 1 ? 0 : prevIndex + 1
-    );
-  };
   const securityFeatures = [
     {
       name: "Network Security",
@@ -203,14 +233,12 @@ const HomePage = () => {
         "Persistent Threat Evolution: Using encryption and P2P communication to evade detection.",
       ],
     },
-    
     {
       name: "Adversary Intelligence",
       img: Group1,
       pic: white2,
       contentImg: F2,
-      description:
-        "BluHawk's Adversary Intelligence provides the critical insights you need to stay ahead of cybercriminals and protect your organization from evolving threats. Explore the depth of adversary intel and fortify your defenses today.",
+      description: "BluHawk's Adversary Intelligence provides the critical insights you need to stay ahead of cybercriminals and protect your organization from evolving threats. Explore the depth of adversary intel and fortify your defenses today.",
       details: [
         "Strengthen security posture with in-depth adversary knowledge.",
         "Proactively defend against emerging threats.",
@@ -223,8 +251,7 @@ const HomePage = () => {
       img: Group2,
       pic: white3,
       contentImg: F3,
-      description:
-        "In today's fast-paced digital landscape, vulnerabilities are constantly being discovered and exploited. BluHawk's Vulnerability Intelligence provides real-time insights into actively exploited weaknesses, enabling you to proactively identify and mitigate risks before they can be exploited.",
+      description: "In today's fast-paced digital landscape, vulnerabilities are constantly being discovered and exploited. BluHawk's Vulnerability Intelligence provides real-time insights into actively exploited weaknesses, enabling you to proactively identify and mitigate risks before they can be exploited.",
       details: [
         "Reduce your attack surface by addressing vulnerabilities.",
         "Minimize the risk of data breaches.",
@@ -237,8 +264,7 @@ const HomePage = () => {
       img: Group4,
       pic: white4,
       contentImg: F4,
-      description:
-        "In today's dynamic threat landscape, waiting for scheduled scans or reports is no longer sufficient. BluHawk's Real-Time Monitoring provides continuous surveillance of your digital assets, enabling you to detect and respond to threats as they emerge.",
+      description: "In today's dynamic threat landscape, waiting for scheduled scans or reports is no longer sufficient. BluHawk's Real-Time Monitoring provides continuous surveillance of your digital assets, enabling you to detect and respond to threats as they emerge.",
       details: [
         "Continuous Threat Detection: Immediate analysis of activity.",
         "Instant Alerting: Rapid notifications of security events.",
@@ -253,8 +279,7 @@ const HomePage = () => {
       img: Group5,
       pic: white5,
       contentImg: F5,
-      description:
-        "Gain unparalleled visibility into your digital assets with BluHawk's comprehensive Asset Analysis. Understand your network's exposure, identify hidden vulnerabilities, and ensure the integrity of your online presence.",
+      description: "Gain unparalleled visibility into your digital assets with BluHawk's comprehensive Asset Analysis. Understand your network's exposure, identify hidden vulnerabilities, and ensure the integrity of your online presence.",
       details: [
         "IP/Domain Lookup: Detailed asset information.",
         "DNS/Hosting Data: Configuration and environment insights.",
@@ -269,8 +294,7 @@ const HomePage = () => {
       img: Group6,
       pic: white6,
       contentImg: F6,
-      description:
-        "In the face of overwhelming security data, knowing where to focus is crucial. BluHawk's Threat Prioritization empowers you to identify and address the most critical threats, optimizing your security resources and minimizing your risk.",
+      description: "In the face of overwhelming security data, knowing where to focus is crucial. BluHawk's Threat Prioritization empowers you to identify and address the most critical threats, optimizing your security resources and minimizing your risk.",
       details: [
         "Risk-Based Scoring: Evaluate severity for clear assessment.",
         "Contextual Threat Intelligence: Prioritize based on real-world attack data.",
@@ -283,8 +307,7 @@ const HomePage = () => {
       img: Group7,
       pic: white7,
       contentImg: F7,
-      description:
-        "Eliminate manual security checks and ensure constant vigilance with BluHawk's Automated Scanning. Our platform continuously scans your web applications, servers, and digital infrastructure, identifying vulnerabilities and potential threats before they can be exploited.",
+      description: "Eliminate manual security checks and ensure constant vigilance with BluHawk's Automated Scanning. Our platform continuously scans your web applications, servers, and digital infrastructure, identifying vulnerabilities and potential threats before they can be exploited.",
       details: [
         "Reduce manual effort and improve security efficiency.",
         "Proactively identify vulnerabilities before exploitation.",
@@ -298,8 +321,7 @@ const HomePage = () => {
       img: Group8,
       pic: white8,
       contentImg: F8,
-      description:
-        "Gain a strategic advantage in cybersecurity with BluHawk's MITRE ATT&CK Mapping. We translate complex threat intelligence into actionable insights by aligning adversary behaviors with the globally recognized MITRE ATT&CK framework. This allows you to understand attacker tactics, techniques, and procedures (TTPs) and build robust defenses.",
+      description: "Gain a strategic advantage in cybersecurity with BluHawk's MITRE ATT&CK Mapping. We translate complex threat intelligence into actionable insights by aligning adversary behaviors with the globally recognized MITRE ATT&CK framework. This allows you to understand attacker tactics, techniques, and procedures (TTPs) and build robust defenses.",
       details: [
         "Proactively identify and mitigate potential threats by understanding attacker TTPs.",
         "Improve your security posture by aligning your defenses with known adversary behaviors.",
@@ -309,39 +331,26 @@ const HomePage = () => {
     },
   ];
 
-  const [selectedFeature, setSelectedFeature] = useState({
-    name: "Network Security",
-    img: Group3,
-    contentImg: F1,
-    description:
-      "Network compromises result in botnet creation, where attackers control numerous infected devices. These botnets facilitate various malicious activities, including:",
-    details: [
-      "DDoS Attacks: Overwhelming target networks, disrupting services.",
-      "Data Theft: Exfiltrating sensitive information.",
-      "Phishing/Spam: Distributing malware and phishing attempts.",
-      "Financial Fraud: Automating unauthorized transactions.",
-      "Cryptojacking: Hijacking computing power for cryptocurrency mining.",
-      "Persistent Threat Evolution: Using encryption and P2P communication to evade detection.",
-    ],
-  });
+  const [selectedFeature, setSelectedFeature] = useState(securityFeatures[0]);
   const [currentFeatureIndex, setCurrentFeatureIndex] = useState(0);
   const pauseUntilRef = useRef(0);
+  const cardRefs = useRef([]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
       if (now < pauseUntilRef.current) {
         return;
-    }
+      }
       setCurrentFeatureIndex((prevIndex) => {
         const nextIndex = (prevIndex + 1) % securityFeatures.length;
         setSelectedFeature(securityFeatures[nextIndex]);
         return nextIndex;
       });
     }, 4000);
-  
+
     return () => clearInterval(interval); // cleanup on unmount
   }, []);
-  
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -360,64 +369,68 @@ const HomePage = () => {
       }
     }
   }, [currentFeatureIndex]);
+
   return (
     <div className="w-full">
-      
-       <HomeNavbar
-       securityFeatures={securityFeatures}
-       setSelectedFeature={setSelectedFeature}
-       openModalFromParent={handleOpenModalFromNavbar} // Added to receive openModal
-        />
-      
-      {/* <HomeNavbar3  openModalFromParent={handleOpenModalFromNavbar} /> */}
+      <HomeNavbar
+        securityFeatures={securityFeatures}
+        setSelectedFeature={setSelectedFeature}
+        openModalFromParent={handleOpenModalFromNavbar} // Added to receive openModal
+      />
 
       {/* Hero Section */}
       <section
         id="hero"
         data-bg="blue"
-        className="relative bg-royalBlue text-white h-screen flex items-center justify-center text-center px-6"
+        className="relative bg-royalBlue text-white h-screen flex items-center text-left px-6"
+        style={{ backgroundImage: `url(${gridbackground})`, backgroundSize: "cover", backgroundPosition: "center" }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-        <div className="relative z-10 max-w-3xl">
-          <h3 className="text-sm uppercase tracking-wide text-gray-300 mb-2">
-            Software Solution Master Mind
-          </h3>
-          {/* <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Cybersecurity Is Critical To Your{" "}
-            <span className="text-[#FE5E15]">Digital Safety</span>
-          </h1>
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-[#FE5E15]">Stay Protected</span> From Evolving
-            Threats
-          </h1> */}
 
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight md:leading-snug">
-            Cybersecurity Is Critical To Your{" "}
-            <span className="text-[#FE5E15]">Digital Safety</span>
-          </h1>
-          <h1 className="text-4xl md:text-5xl font-bold leading-tight md:leading-snug">
-            <span className="text-[#FE5E15]">Stay Protected</span> From Evolving Threats
-          </h1>
-          <p className="text-gray-400 text-lg mb-8">
-            Ensure the safety of your digital assets with BluHawk’s advanced
-            threat intelligence, providing proactive protection against the
-            latest cyber threats.
-          </p>
-          <div className="flex flex-col md:flex-row justify-center gap-4">
-            <button
-             className="bg-transparent border border-[#FE5E15] text-[#FE5E15] font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-vibrantOrange hover:text-white transition"
-              // onClick={() => window.location.href = "http://localhost:8080/index.html"}
-              onClick={() => navigate('/threatmap2')} // Add state to show component
+        <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center w-full">
+          {/* Left Text Content */}
+          <div className="max-w-2xl md:pr-4 flex flex-col justify-center">
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 leading-tight">
+              GLOBAL <span className="text-red-500">{securityLockText}</span>
+            </h1>
+
+            <p className="text-white text-lg mb-8">
+              Protect your online world with strong{" "}
+              <span className="text-red-500 font-bold">CYBER SECURITY</span>, keeping data safe from threats. 
+              Easy training, regular updates, and constant monitoring ensure quick, reliable recovery.
+            </p>
+
+            <div className="flex justify-between w-full max-w-sm">
+              <button
+                className="bg-[#e5e5e5] border border-black text-black font-semibold py-2 px-6 relative"
+                style={{
+                  clipPath: 'polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%)'
+                }}
+                onClick={() => navigate('/threatmap2')}
               >
-              Threat Map
-            </button>
-            <button
-              className="bg-transparent border border-[#FE5E15] text-[#FE5E15] font-semibold py-3 px-6 rounded-lg shadow-lg hover:bg-vibrantOrange hover:text-white transition"
-              onClick={handleGotoDashboardClick} // Go To Dashboard button
-            >
-              Go To Dashboard
-            </button>
-          </div> 
+                Threat Map
+              </button>
+
+              <button
+                className="bg-[#e5e5e5] border border-black text-black font-semibold py-2 px-6 relative"
+                style={{
+                  clipPath: 'polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%)'
+                }}
+                onClick={handleGotoDashboardClick}
+              >
+                Go to Dashboard
+              </button>
+            </div>
+          </div>
+
+          {/* Right Lock Image */}
+          <div className="flex-shrink-0 mt-8 md:mt-0 md:ml-8">
+            <img
+              src={lockImage}
+              alt="Lock"
+              className="w-[350px] md:w-[480px] lg:w-[700px] h-auto object-contain"
+            />
+          </div>
         </div>
       </section>
 
@@ -437,12 +450,12 @@ const HomePage = () => {
                 <img
                   src={feature.img}
                   alt={feature.name}
-                  className="w-16 h-16 object-contain"
+                  className="w-70 h-70 object-contain"
                 />
               </div>
               <h3 className="text-xl font-semibold mb-2">{feature.name}</h3>
               <p className="text-gray-600">
-             {feature.description}
+                {feature.description}
               </p>
             </div>
           ))}
@@ -450,48 +463,66 @@ const HomePage = () => {
       </section>
 
       {/* About Us Section */}
-      <section
-        id="about-us"
-        data-bg="white"
-        className="h-screen flex flex-col md:flex-row items-center justify-center px-10 md:px-20 bg-[#F5F5F5]"
-      >
-        <div className="md:w-1/2 text-center md:text-left">
-          <h2 className="text-[#FE5E15] font-bold uppercase mb-2">About Us</h2>
-          <h1 className="text-4xl font-bold mb-4">
+      <section className="relative w-full h-screen flex overflow-hidden bg-[#D9D9D9]">
+        {/* Left Content */}
+        <div className="w-full md:w-1/2 px-10 md:px-20 flex flex-col justify-center z-10">
+          <h2 className="text-[#B1382B] font-bold uppercase mb-2 text-lg">ABOUT US</h2>
+
+          {/* Heading — allow wrap, no scroll */}
+          <h1 className="text-[1.9rem] md:text-4xl font-bold mb-4 text-black">
             We provide cutting-edge cybersecurity solutions.
           </h1>
-          <p className="text-gray-600 mb-4">
-            We provide cutting-edge cybersecurity solutions to protect your
-            business from evolving digital threats.
+
+          <p className="text-gray-700 mb-6">
+            We deliver advanced cybersecurity solutions to protect your business from evolving digital threats.
           </p>
-          <ul className="pl-5 text-gray-600 space-y-2">
-            <li className="relative pl-4 before:absolute before:-left-5 before:top-1/2 before:-translate-y-1/2 before:w-2 before:h-2 before:bg-vibrantOrange before:rounded-full">
-              Customized Security Solutions
-            </li>
-            <li className="relative pl-4 before:absolute before:-left-5 before:top-1/2 before:-translate-y-1/2 before:w-2 before:h-2 before:bg-vibrantOrange before:rounded-full">
-              Vulnerability Assessment
-            </li>
-            <li className="relative pl-4 before:absolute before:-left-5 before:top-1/2 before:-translate-y-1/2 before:w-2 before:h-2 before:bg-vibrantOrange before:rounded-full">
-              24/7 Incident Response
-            </li>
-            <li className="relative pl-4 before:absolute before:-left-5 before:top-1/2 before:-translate-y-1/2 before:w-2 before:h-2 before:bg-vibrantOrange before:rounded-full">
-              User Training Programs
-            </li>
+          <ul className="pl-5 text-gray-800 space-y-3">
+            {[
+              "Customized Security Solutions",
+              "Vulnerability Assessment",
+              "24/7 Incident Response",
+              "User Training Programs",
+            ].map((item, index) => (
+              <li
+                key={index}
+                className="relative pl-5 before:absolute before:-left-3 before:top-2 before:w-2 before:h-2 before:bg-[#B1382B] before:rounded-full"
+              >
+                {item}
+              </li>
+            ))}
           </ul>
         </div>
-        <div className="md:w-1/2 flex justify-center">
-          <img
-            src="/ab2.jpg.png"
-            alt="Cybersecurity"
-            className="w-full max-w-md rounded-lg shadow-lg"
-          />
+
+        {/* Right Side with BOTTOM-RIGHT Quarter Circle */}
+        <div className="hidden md:block w-1/2 h-full relative bg-transparent">
+          {/* Quarter Circle */}
+          <div className="absolute bottom-0 right-0 w-[650px] h-[650px] bg-[#015265] rounded-tl-full z-0"></div>
+
+          {/* Centered Image and Text */}
+          <div className="absolute bottom-[120px] right-[180px] flex flex-col items-center z-10">
+  <img
+    src="/ab2.jpg.png"
+    alt="Bluhawk Eagle"
+    className="w-[450px] drop-shadow-xl block align-bottom p-0 m-0"
+    style={{display: 'block', marginBottom: '0', paddingBottom: 0}}
+    draggable="false"
+  />
+  <h1 className="text-white text-2xl md:text-2xl font-bold mt-[-20px] mb-0 leading-none p-0" style={{lineHeight: 1}}>
+    BLUHAWK
+  </h1>
+</div>
+
+
+            
+
+
         </div>
       </section>
 
       {/* Services Section */}
       <section
         id="services"
-        data-bg="blue"
+        data-bg ="blue"
         className="h-screen flex flex-col items-center justify-center text-white px-6 bg-cover bg-center relative"
         style={{ backgroundImage: "url('/bg.jpg')" }}
       >
@@ -571,7 +602,7 @@ const HomePage = () => {
         {/* Security Features Section */}
         <div className="flex flex-col md:flex-row overflow-x-auto snap-x snap-mandatory justify-center w-full mt-12 px-12 py-8 pt-12">
           <div className="flex overflow-x max-w-[80%] space-x-4 pb-4 px-4 mx mx-auto scrollbar-hide ">
-          <div className="shrink-0 w-[calc(50%-50px)] md:hidden" />
+            <div className="shrink-0 w-[calc(50%-50px)] md:hidden" />
             {securityFeatures.map((feature, index) => (
               <div
                 key={index}
@@ -581,15 +612,15 @@ const HomePage = () => {
                   setCurrentFeatureIndex(index);
                   pauseUntilRef.current = Date.now() + 10000; // Pause for 10 seconds
                   if (window.innerWidth < 768) {
-                  cardRefs.current[index]?.scrollIntoView({
-                    behavior: "smooth",
-                    inline: "center",
-                  });
-                }
-                }}                
+                    cardRefs.current[index]?.scrollIntoView({
+                      behavior: "smooth",
+                      inline: "center",
+                    });
+                  }
+                }}
                 className={`flex flex-col justify-center items-center border border-[#FE5E15] rounded-lg p-3 min-w-[120px] w-[140px] h-[150px] shadow-md cursor-pointer transition-transform duration-300 ease-in-out hover:scale-110 hover:shadow-xl ${
                   selectedFeature.name === feature.name
-                    ? "scale-110 shadow-xl bg-vibrantOrange text-white" 
+                    ? "scale-110 shadow-xl bg-vibrantOrange text-white"
                     : "bg-white text-black"
                 }`}
               >
@@ -629,8 +660,9 @@ const HomePage = () => {
               <ul className="mt-4 text-gray-700 space-y-2">
                 {selectedFeature.details.map((detail, ind) => (
                   <li
-                  key={ind+1}
-                  className="flex items-start gap-2">
+                    key={ind + 1}
+                    className="flex items-start gap-2"
+                  >
                     <span className="w-2 h-2 mt-2 rounded-full bg-[#FE5E15] shrink-0"></span>
                     <span className="pl-1">{detail}</span>
                   </li>
@@ -641,166 +673,59 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Feedback Section */}
+      {/* Feedback and Testimonials Section */}
       <section
-      id="feedback-testimonial"
-      data-bg="blue"
-      className="py-16 bg-[#F5F5F5] flex flex-col items-center justify-center px-6"
-    >
-      {/* Customer Feedback Section */}
-      <div className="w-full max-w-7xl mb-16 px-4">
-        <div className="flex flex-col md:flex-row items-start justify-between">
-          <div className="md:w-1/2 w-full mb-6 md:mb-0">
-            <div className="max-w-max mx-auto md:mx-0">
-              <h2 className="text-4xl font-bold text-center md:text-left text-[#172B64] mb-4 whitespace-nowrap">
-                Customer Feedback
-              </h2>
-              <p className="text-gray-600 break-words w-full md:w-[350px]">
-                The phrase sequence of the Lorem Ipsum text is now so widespread
-                and commonplace that many DTP programmes can generate dummy.
-              </p>
-            </div>
-            <button className="mt-4 bg-vibrantOrange text-white px-6 py-2 rounded-full hover:bg-vibrantOrange/90 transition">
-              MORE REVIEWS
-            </button>
-          </div>
-
-          <div className="md:w-1/2 w-full flex flex-col items-center">
-            <div className="w-full flex items-center justify-between relative">
-              {/* Left Arrow */}
-              <button
-                onClick={prevSlide}
-                className="absolute top-1/2 left-[-20px] md:left-[-40px] transform -translate-y-1/2 transition z-10"
-              >
-                <img src={leftArrow} alt="Previous slide" className="w-9 h-9" />
-              </button>
-
-              {/* Cards Container */}
-              <div className="w-full overflow-hidden">
-                <div
-                  className="flex transition-transform duration-300 ease-in-out"
-                  style={{
-                    transform: `translateX(-${
-                      currentIndex * (100 / totalSlides)
-                    }%)`,
-                    width: `${totalSlides * 100}%`,
-                  }}
-                >
-                  {[...Array(totalSlides)].map((_, slideIndex) => {
-                    const startIdx = slideIndex * visibleCards;
-                    const slideItems = feedbackData.slice(
-                      startIdx,
-                      startIdx + visibleCards
-                    );
-
-                    return (
-                      <div
-                        key={slideIndex}
-                        className="flex gap-4 w-full flex-shrink-0"
-                        style={{ width: `${100 / totalSlides}%` }}
-                      >
-                        {slideItems.map((feedback) => (
-                          <div
-                            key={feedback.id}
-                            className="bg-[#020E29] text-white p-4 rounded-lg shadow-lg h-64 flex flex-col justify-between w-full"
-                            style={{
-                              flex: `0 0 ${100 / visibleCards}%`,
-                            }}
-                          >
-                            <div className="flex items-center mb-2">
-                              <img
-                                src={feedback.image}
-                                alt={feedback.name}
-                                className="w-10 h-10 rounded-full mr-3"
-                              />
-                              <div>
-                                <h3 className="text-base font-semibold">
-                                  {feedback.name}
-                                </h3>
-                                <p className="text-xs text-gray-300">
-                                  {feedback.role}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex mb-2">
-                              {[...Array(feedback.rating)].map((_, i) => (
-                                <svg
-                                  key={i}
-                                  className="w-4 h-4 text-yellow-400"
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                >
-                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                              ))}
-                            </div>
-                            <p className="text-gray-200 text-sm">
-                              {feedback.feedback}
-                            </p>
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Right Arrow */}
-              <button
-                onClick={nextSlide}
-                className="absolute top-1/2 right-[-20px] md:right-[-40px] transform -translate-y-1/2 transition z-10"
-              >
-                <img src={rightArrow} alt="Next slide" className="w-9 h-9" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Testimonials Section */}
-      <div
-        id="ceo-words" 
-        className="w-full max-w-7xl relative"
-        style={{
-          backgroundImage: `url(${bgCEO})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
+        id="feedback-testimonial"
+        data-bg="blue"
+        className="py-16 bg-[#F5F5F5] flex flex-col items-center justify-center px-6"
       >
-        <div className="absolute inset-0 bg-[#3E4E65F2] z-0"></div>
+        <FeedbackCarousel feedbacks={feedbacks} />
 
-        <div className="flex flex-col md:flex-row gap-8 relative z-10">
-          {testimonialData.map((testimonial) => (
-            <div
-              key={testimonial.id}
-              className="flex flex-col md:flex-row items-center gap-6 w-full bg-[#020E29] text-white p-6 rounded-lg shadow-lg"
-            >
-              <div className="w-full md:w-1/3">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  className="rounded-lg w-full"
-                />
-              </div>
-              <div className="w-full md:w-2/3">
-                <p className="text-lg">{testimonial.quote}</p>
-                <p className="mt-4 font-semibold">
-                  {testimonial.name}, {testimonial.role}
-                </p>
-              </div>
-            </div>
-          ))}
+        {/* Testimonials Section */}
+        <div
+  id="ceo-words"
+  className="w-full max-w-7xl relative"
+  style={{
+    backgroundImage: `url(${bgCEO})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+  }}
+>
+  <div className="absolute inset-0 bg-[#3E4E65F2] z-0"></div>
+
+  <div className="flex flex-col md:flex-row gap-8 relative z-10">
+    {testimonialData.map((testimonial) => (
+      <div
+        key={testimonial.id}
+        className="flex flex-col md:flex-row-reverse items-center gap-6 w-7xl bg-[#015265] text-white p-6 rounded-lg shadow-lg"
+      >
+       <div className="w-full md:w-[200px]">
+  <img
+    src={testimonial.image}
+    alt={testimonial.name}
+    className="rounded-lg w-full"
+  />
+</div>
+
+        <div className="w-full md:w-2/3">
+          <p className="text-lg">{testimonial.quote}</p>
+          <p className="mt-4 font-semibold">
+            {testimonial.name}, {testimonial.role}
+          </p>
         </div>
       </div>
-    </section>
+    ))}
+  </div>
+</div>
 
+      </section>
 
-    <div id="footer">
-    <Footer />
-    </div>
-   
+      <div id="footer">
+        <Footer />
+      </div>
     </div>
   );
 };
+
 export default HomePage;
