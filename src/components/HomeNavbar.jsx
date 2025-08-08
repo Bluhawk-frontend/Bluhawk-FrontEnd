@@ -202,9 +202,9 @@ export default function HomeNavbar({ securityFeatures, setSelectedFeature, openM
             const sectionBg = entry.target.getAttribute("data-bg");
             setNavbarBg(sectionBg);
             if (sectionBg === "blue") {
-              setLogoSrc("/bluhawk-blackbg.svg");
+              setLogoSrc("/bluhawk-blackbg.png");
             } else if (sectionBg === "white") {
-              setLogoSrc("/bluhawk-whitebg.svg");
+              setLogoSrc("/bluhawk-blackbg.png");
             }
           }
         });

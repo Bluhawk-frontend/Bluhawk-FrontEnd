@@ -31,19 +31,27 @@ export default function Footer() {
     }
   };
   return (
-    <footer className="border-t border-gray-700 bg-[#0e1628] text-white w-full">
+    <footer className="border-t border-gray-700 bg-[#015265] text-white w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Left Section */}
         <div className="flex flex-col items-start">
-          <a href="/">
-            <img src="/bluhawk-blackbg.svg" alt="BlueHawk Logo" className="w-[140px] sm:w-[166px] h-auto" />
-          </a>
+           <a href="/" className="flex items-center gap-0">
+  <img
+    src="/bluhawk-blackbg.png"
+    alt="BluHawk Logo"
+    className="w-[140px] sm:w-[166px] h-auto m-0"
+  />
+  <span className="text-white text-xl font-bold ml-[-30px]">BluHawk</span>
+</a>
+
+
+
           <p className="text-sm mt-2">
             BluHawk uses AI-driven threat intelligence and automation to neutralize cyber threats in real time, seamlessly integrating with existing security for adaptive defense.
           </p>
           <p className="text-lg font-semibold mt-4">Newsletter</p>
           <button
-            className="bg-vibrantOrange text-white px-4 py-2 mt-2 rounded hover:bg-orange-600 transition"
+            className="bg-[#9F4B4E] text-white px-4 py-2 mt-2 rounded"
             onClick={handleSubscribeClick}
           >
             Subscribe
@@ -76,20 +84,20 @@ export default function Footer() {
         <div className="flex flex-col items-start">
           <h3 className="text-lg font-semibold mb-3">Information</h3>
           <p className="text-sm py-2">
-            <span className="font-bold text-[#FE5E15]">Location:</span> N-Heights, 5th Floor, HITEC City, Hyderabad
+            <span className="font-bold text-[#B54A4A]">Location:</span> N-Heights, 5th Floor, HITEC City, Hyderabad
           </p>
           <p className="text-sm py-2">
-            <span className="font-bold text-[#FE5E15]">Tel:</span> +91 846-602-2022
+            <span className="font-bold text-[#B54A4A]">Tel:</span> +91 846-602-2022
           </p>
           <p className="text-sm py-2">
-            <span className="font-bold text-[#FE5E15]">Email:</span> info@bluecloudsoftech.com
+            <span className="font-bold text-[#B54A4A]">Email:</span> info@bluecloudsoftech.com
           </p>
           {/* Social Media Icons */}
           <div className="flex space-x-4 mt-3">
-            <FaTwitter className="text-[#FE5E15] text-xl cursor-pointer hover:text-orange-600" />
-            <FaFacebookF className="text-[#FE5E15] text-xl cursor-pointer hover:text-orange-600" />
-            <FaYoutube className="text-[#FE5E15] text-xl cursor-pointer hover:text-orange-600" />
-            <FaInstagram className="text-[#FE5E15] text-xl cursor-pointer hover:text-orange-600" />
+            <FaTwitter className="text-[#9F4B4E] text-xl cursor-pointer  hover:text-orange-600" />
+            <FaFacebookF className="text-[#9F4B4E] text-xl cursor-pointer hover:text-orange-600" />
+            <FaYoutube className="text-[#9F4B4E] text-xl cursor-pointer hover:text-orange-600" />
+            <FaInstagram className="text-[#9F4B4E] text-xl cursor-pointer hover:text-orange-600" />
           </div>
         </div>
       </div>

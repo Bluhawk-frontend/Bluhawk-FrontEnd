@@ -14,7 +14,7 @@ export default function NewNavbar() {
   const [showMalwareMenu, setShowMalwareMenu] = useState(false);
   const [showBusinessMenu, setShowBusinessMenu] = useState(false);
   const [showAttackDropdown, setShowAttackDropdown] = useState(false);
-  const logoSrc = "/bluhawk-blackbg.svg";
+  const logoSrc = "";
 
   const handleNavigation = (path) => {
     setShowDropdown(false);
