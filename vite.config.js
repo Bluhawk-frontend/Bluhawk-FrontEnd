@@ -6,7 +6,7 @@ export default defineConfig({
   base:"/",
   plugins: [react()],
   server: {
-    port: 3000,
+    port: 3001,
     strictPort: true, // Prevent Vite from trying other ports
     historyApiFallback: true, // For React Router
   }

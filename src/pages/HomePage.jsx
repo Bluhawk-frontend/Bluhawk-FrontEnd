@@ -9,7 +9,6 @@ import lockImage from "../assets/images/lock.png"; // Add this line (adjust path
 import useTypingAnimation from "../hooks/useTypingAnimation";
 import FeedbackCard from "../components/FeedbackCard"; // adjust path if needed
 
-
 // Placeholder imports for images
 import man from "../assets/images/Man.png";
 import Link0 from "../assets/images/Link.jpg";
@@ -42,7 +41,7 @@ import F8 from "../assets/images/F8.png";
 import bgCEO from "../assets/images/BG-CEO.png";
 
 // FeedbackCarousel Component
- const FeedbackCarousel = ({ feedbacks }) => {
+const FeedbackCarousel = ({ feedbacks }) => {
   const [index, setIndex] = useState(0);
   const carouselRef = useRef(null);
 
@@ -99,49 +98,52 @@ import bgCEO from "../assets/images/BG-CEO.png";
   }, [index, visibleCards]);
 
   return (
-    <section className="bg-[#D9D9D9] py-16 px-4 flex flex-col items-center justify-center">
-      <div className="w-full max-w-7xl">
-        <h2 className="text-3xl font-bold text-[#9B4D4D] mb-2">Customer Feedback</h2>
-        <p className="text-gray-800 mb-10 max-w-2xl">
-          Our customers' thoughts are important to us, and their feedback helps us improve.
+    <section className="bg-[#D9D9D9] py-16 px-10 flex flex-col items-center space-y-8 justify-items-start w-full relative">
+      <div className="w-full">
+      
+
+        <h2 className="text-3xl font-bold text-[#9B4D4D] mb-2 text-center">Customer Feedback</h2>
+        <p className="text-gray-800 mb-10 text-center max-w-2xl mx-auto">
+          Our customers' thoughts are important to us, and their feedback helps us improve. Many now share their opinions easily using simple tools.
         </p>
+        {/* Left Arrow */}
+        <button
+          className="absolute left-4 z-10 bg-[#015265] p-2 rounded-full shadow"
+          onClick={prevSlide}
+          style={{ top: '50%', transform: 'translateY(-50%)' }}
+        >
+          <FaArrowLeft className="w-6 h-6 text-white" />
+        </button>
 
-        <div className="relative w-full flex items-center justify-center">
-          {/* Left Arrow */}
-          <button
-            className="absolute left-0 z-10 bg-white p-2 rounded-full shadow"
-            onClick={prevSlide}
-          >
-            <FaArrowLeft className="w-6 h-6 text-gray-700" />
-          </button>
-
-          {/* Card Track */}
-          <div className="flex overflow-hidden w-full justify-center px-10">
+        {/* Card Track */}
+        <div className="relative w-full flex items-center justify-center overflow-hidden">
+          <div className="flex w-full px-0 justify-start">
             <div
               ref={carouselRef}
               className="flex w-full"
-              style={{ width: `${(feedbacks.length / visibleCards) * 100}%` }}
+              style={{ width: `${(feedbacks.length / visibleCards) * 100}%`, gap: '0px' }} // Explicitly set gap to 0
             >
               {feedbacks.map((item, i) => (
                 <div
                   key={i}
-                  className="p-4"
-                  style={{ width: `${100 / feedbacks.length}%` }}
+                  className="flex-shrink-0"
+                  style={{ width: `${100 / visibleCards}%` }}
                 >
                   <FeedbackCard name={item.name} feedback={item.feedback} />
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Right Arrow */}
-          <button
-            className="absolute right-0 z-10 bg-white p-2 rounded-full shadow"
-            onClick={nextSlide}
-          >
-            <FaArrowRight className="w-6 h-6 text-gray-700" />
-          </button>
         </div>
+
+        {/* Right Arrow */}
+        <button
+          className="absolute right-4 z-10 bg-[#015265] p-2 rounded-full shadow"
+          onClick={nextSlide}
+          style={{ top: '50%', transform: 'translateY(-50%)' }}
+        >
+          <FaArrowRight className="w-6 h-6 text-white" />
+        </button>
       </div>
     </section>
   );
@@ -202,8 +204,8 @@ const HomePage = () => {
     { name: "Revathi", feedback: "Great tool for replacing text! The dummy text keeps the layout perfect." },
     { name: "Ramu", feedback: "The support team was friendly and fixed my problem fast." },
     { name: "Pavitra", feedback: "Amazing service! Easy to use and very reliable." },
-    { name: "Suresh", feedback: "Clean interface, loved it!" },
-    { name: "Meena", feedback: "Super fast and accurate results. Highly recommend!" },
+    { name: "Indhu", feedback: "Clean interface, loved it!" },
+    { name: "Suresh", feedback: "Super fast and accurate results. Highly recommend!" },
     { name: "Raj", feedback: "Simple and smooth experience overall." },
   ];
 
@@ -390,13 +392,13 @@ const HomePage = () => {
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center w-full">
           {/* Left Text Content */}
           <div className="max-w-2xl md:pr-4 flex flex-col justify-center">
-            <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 leading-tight">
-              GLOBAL <span className="text-red-500">{securityLockText}</span>
+            <h1 className="text-3xl md:text-3xl font-extrabold text-white mb-4 leading-tight">
+              GLOBAL <span className="text-[#A22323]">{securityLockText}</span>
             </h1>
 
             <p className="text-white text-lg mb-8">
               Protect your online world with strong{" "}
-              <span className="text-red-500 font-bold">CYBER SECURITY</span>, keeping data safe from threats. 
+              <span className="text-[#A22323] font-bold">CYBER SECURITY</span>, keeping data safe from threats. 
               Easy training, regular updates, and constant monitoring ensure quick, reliable recovery.
             </p>
 
@@ -428,7 +430,7 @@ const HomePage = () => {
             <img
               src={lockImage}
               alt="Lock"
-              className="w-[350px] md:w-[480px] lg:w-[700px] h-auto object-contain"
+              className="w-[450px] md:w-[580px] lg:w-[800px] h-auto object-contain"
             />
           </div>
         </div>
@@ -436,37 +438,44 @@ const HomePage = () => {
 
       {/* Features Section */}
       <section
-        id="features"
-        data-bg="white"
-        className="h-screen flex items-center justify-center bg-white px-6"
+  id="features"
+  data-bg="white"
+  className="h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-white px-6"
+>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-6xl">
+    {features.map((feature, index) => (
+      <div
+        key={index}
+        className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-100 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl  relative overflow-hidden"
       >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-white p-6 rounded-lg shadow-lg text-center"
-            >
-              <div className="mb-4 flex justify-center">
-                <img
-                  src={feature.img}
-                  alt={feature.name}
-                  className="w-70 h-70 object-contain"
-                />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">{feature.name}</h3>
-              <p className="text-gray-600">
-                {feature.description}
-              </p>
-            </div>
-          ))}
+        {/* Decorative Overlay */}
+        <div className="absolute top-0 left-0 w-16 h-16  opacity-10 rounded-br-full transform translate-y-1/4 -translate-x-1/4 z-0"></div>
+        <div className="relative z-10">
+          <div className="mb-6 flex justify-center">
+            <img
+              src={feature.img}
+              alt={feature.name}
+              className="w-[280px] h-[280px] object-contain rounded-xl transition-transform duration-300 hover:rotate-3"
+            />
+          </div>
+          <h3 className="text-2xl font-bold mb-4 text-gray-800 bg-gradient-to-r from-[#015265] to-teal-600 bg-clip-text text-transparent">
+            {feature.name}
+          </h3>
+          <p className="text-gray-600 leading-relaxed text-base">
+            {feature.description}
+          </p>
         </div>
-      </section>
+      </div>
+    ))}
+  </div>
+</section>
 
       {/* About Us Section */}
-      <section className="relative w-full h-screen flex overflow-hidden bg-[#D9D9D9]">
+      <section className="relative w-full h-screen flex overflow-hidden bg-[#D9D9D9]"
+       id="features">
         {/* Left Content */}
-        <div className="w-full md:w-1/2 px-10 md:px-20 flex flex-col justify-center z-10">
-          <h2 className="text-[#B1382B] font-bold uppercase mb-2 text-lg">ABOUT US</h2>
+        <div className="w-full md:w-1/2 px-8 md:px-6 flex flex-col justify-center z-10">
+          <h2 className="text-[#B1382B] font-bold uppercase mb-8 text-4xl">ABOUT US</h2>
 
           {/* Heading — allow wrap, no scroll */}
           <h1 className="text-[1.9rem] md:text-4xl font-bold mb-4 text-black">
@@ -496,26 +505,21 @@ const HomePage = () => {
         {/* Right Side with BOTTOM-RIGHT Quarter Circle */}
         <div className="hidden md:block w-1/2 h-full relative bg-transparent">
           {/* Quarter Circle */}
-          <div className="absolute bottom-0 right-0 w-[650px] h-[650px] bg-[#015265] rounded-tl-full z-0"></div>
+          <div className="absolute bottom-0 right-0 w-[550px] h-[650px] bg-[#015265] rounded-tl-full z-0"></div>
 
           {/* Centered Image and Text */}
-          <div className="absolute bottom-[120px] right-[180px] flex flex-col items-center z-10">
-  <img
-    src="/ab2.jpg.png"
-    alt="Bluhawk Eagle"
-    className="w-[450px] drop-shadow-xl block align-bottom p-0 m-0"
-    style={{display: 'block', marginBottom: '0', paddingBottom: 0}}
-    draggable="false"
-  />
-  <h1 className="text-white text-2xl md:text-2xl font-bold mt-[-20px] mb-0 leading-none p-0" style={{lineHeight: 1}}>
-    BLUHAWK
-  </h1>
-</div>
-
-
-            
-
-
+          <div className="absolute bottom-[180px] right-[180px] flex flex-col items-center z-10">
+            <img
+              src="/ab2.jpg.png"
+              alt="Bluhawk Eagle"
+              className="w-[1000px] drop-shadow-xl block align-bottom p-3 m-0"
+              style={{display: 'block', marginBottom: '0', paddingBottom: 0}}
+              draggable="false"
+            />
+            <h1 className="text-white text-2xl md:text-2xl font-bold mt-[-20px] mb-0 leading-none p-0" style={{lineHeight: 1}}>
+              BLUHAWK
+            </h1>
+          </div>
         </div>
       </section>
 
@@ -618,9 +622,9 @@ const HomePage = () => {
                     });
                   }
                 }}
-                className={`flex flex-col justify-center items-center border border-[#FE5E15] rounded-lg p-3 min-w-[120px] w-[140px] h-[150px] shadow-md cursor-pointer transition-transform duration-300 ease-in-out hover:scale-110 hover:shadow-xl ${
+                className={`flex flex-col justify-center items-center border border-[#015265] rounded-lg p-3 min-w-[120px] w-[140px] h-[150px] shadow-md cursor-pointer transition-transform duration-300 ease-in-out hover:scale-110 hover:shadow-xl ${
                   selectedFeature.name === feature.name
-                    ? "scale-110 shadow-xl bg-vibrantOrange text-white"
+                    ? "scale-110 shadow-xl bg-[#015265] text-white"
                     : "bg-white text-black"
                 }`}
               >
@@ -663,7 +667,7 @@ const HomePage = () => {
                     key={ind + 1}
                     className="flex items-start gap-2"
                   >
-                    <span className="w-2 h-2 mt-2 rounded-full bg-[#FE5E15] shrink-0"></span>
+                    <span className="w-2 h-2 mt-2 rounded-full bg-[#015265] shrink-0"></span>
                     <span className="pl-1">{detail}</span>
                   </li>
                 ))}
@@ -674,51 +678,46 @@ const HomePage = () => {
       </section>
 
       {/* Feedback and Testimonials Section */}
-      <section
-        id="feedback-testimonial"
-        data-bg="blue"
-        className="py-16 bg-[#F5F5F5] flex flex-col items-center justify-center px-6"
-      >
-        <FeedbackCarousel feedbacks={feedbacks} />
+      <FeedbackCarousel feedbacks={feedbacks} />
 
-        {/* Testimonials Section */}
-        <div
-  id="ceo-words"
-  className="w-full max-w-7xl relative"
-  style={{
-    backgroundImage: `url(${bgCEO})`,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  }}
->
-  <div className="absolute inset-0 bg-[#3E4E65F2] z-0"></div>
-
-  <div className="flex flex-col md:flex-row gap-8 relative z-10">
-    {testimonialData.map((testimonial) => (
-      <div
-        key={testimonial.id}
-        className="flex flex-col md:flex-row-reverse items-center gap-6 w-7xl bg-[#015265] text-white p-6 rounded-lg shadow-lg"
-      >
-       <div className="w-full md:w-[200px]">
-  <img
-    src={testimonial.image}
-    alt={testimonial.name}
-    className="rounded-lg w-full"
-  />
-</div>
-
-        <div className="w-full md:w-2/3">
-          <p className="text-lg">{testimonial.quote}</p>
-          <p className="mt-4 font-semibold">
-            {testimonial.name}, {testimonial.role}
-          </p>
+      {/* CEO's Words Section with Gap */}
+      <section className="bg-[#015265] py-16 px-0 flex flex-col items-center w-full relative my-16">
+        <div className="w-full">
+          <div
+            id="ceo-words"
+            className="w-full relative"
+            style={{
+              backgroundImage: `url(${bgCEO})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            <div className="absolute inset-0 bg-[#015265] z-0"></div>
+            <div className="flex flex-col md:flex-row gap-4 relative z-10">
+              {testimonialData.map((testimonial) => (
+                <div
+                  key={testimonial.id}
+                  className="flex flex-col md:flex-row-reverse items-center gap-6 w-full bg-[#015265] text-white p-7 rounded-lg shadow-lg mx-auto max-w-7xl"
+                >
+                  <div className="w-full md:w-[300px]">
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      className="rounded-lg w-full"
+                    />
+                  </div>
+                  <div className="w-full md:w-2/3">
+                    <p className="text-lg">{testimonial.quote}</p>
+                    <p className="mt-4 font-semibold">
+                      {testimonial.name}, {testimonial.role}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    ))}
-  </div>
-</div>
-
       </section>
 
       <div id="footer">
