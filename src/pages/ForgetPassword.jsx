@@ -65,7 +65,7 @@ const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
               className="h-14 w-auto"
               onError={(e) => {
                 console.error("Failed to load logo:", LogoSrc);
-                e.target.src = "/fallback-logo.png"; // Fallback image
+                e.target.src = "/bluhawk-blackbg.png"; // Fallback image
               }}
             />
             <h2 className="text-xl font-semibold mb-2 text-gray-800 py-2">

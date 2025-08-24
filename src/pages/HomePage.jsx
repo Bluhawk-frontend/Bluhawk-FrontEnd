@@ -1,13 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import Cookies from "js-cookie"; // Added for token
-import { useNavigate } from "react-router-dom"; // Added for navigation
+import { FaArrowLeft, FaArrowRight, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/reusable/Footer";
 import HomeNavbar from "../components/HomeNavbar";
 import gridbackground from "../assets/images/grid-background.jpg";
-import lockImage from "../assets/images/lock.png"; // Add this line (adjust path as needed)
 import useTypingAnimation from "../hooks/useTypingAnimation";
-import FeedbackCard from "../components/FeedbackCard"; // adjust path if needed
+import FeedbackCard from "../components/FeedbackCard";
 
 // Placeholder imports for images
 import man from "../assets/images/Man.png";
@@ -40,6 +39,10 @@ import F7 from "../assets/images/F7.png";
 import F8 from "../assets/images/F8.png";
 import bgCEO from "../assets/images/BG-CEO.png";
 
+// Import the video files
+import promoVideo from "../assets/images/promo-video.mp4";
+import globeVideo from "../assets/images/globe.mp4"; // Ensure this file exists at src/assets/images/globe.mp4
+
 // FeedbackCarousel Component
 const FeedbackCarousel = ({ feedbacks }) => {
   const [index, setIndex] = useState(0);
@@ -56,7 +59,7 @@ const FeedbackCarousel = ({ feedbacks }) => {
   useEffect(() => {
     const handleResize = () => {
       setVisibleCards(cardsPerView());
-      setIndex(0); // Reset on resize
+      setIndex(0);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -100,13 +103,10 @@ const FeedbackCarousel = ({ feedbacks }) => {
   return (
     <section className="bg-[#D9D9D9] py-16 px-10 flex flex-col items-center space-y-8 justify-items-start w-full relative">
       <div className="w-full">
-      
-
         <h2 className="text-3xl font-bold text-[#9B4D4D] mb-2 text-center">Customer Feedback</h2>
         <p className="text-gray-800 mb-10 text-center max-w-2xl mx-auto">
           Our customers' thoughts are important to us, and their feedback helps us improve. Many now share their opinions easily using simple tools.
         </p>
-        {/* Left Arrow */}
         <button
           className="absolute left-4 z-10 bg-[#015265] p-2 rounded-full shadow"
           onClick={prevSlide}
@@ -114,14 +114,12 @@ const FeedbackCarousel = ({ feedbacks }) => {
         >
           <FaArrowLeft className="w-6 h-6 text-white" />
         </button>
-
-        {/* Card Track */}
         <div className="relative w-full flex items-center justify-center overflow-hidden">
           <div className="flex w-full px-0 justify-start">
             <div
               ref={carouselRef}
               className="flex w-full"
-              style={{ width: `${(feedbacks.length / visibleCards) * 100}%`, gap: '0px' }} // Explicitly set gap to 0
+              style={{ width: `${(feedbacks.length / visibleCards) * 100}%`, gap: '0px' }}
             >
               {feedbacks.map((item, i) => (
                 <div
@@ -135,8 +133,6 @@ const FeedbackCarousel = ({ feedbacks }) => {
             </div>
           </div>
         </div>
-
-        {/* Right Arrow */}
         <button
           className="absolute right-4 z-10 bg-[#015265] p-2 rounded-full shadow"
           onClick={nextSlide}
@@ -151,17 +147,20 @@ const FeedbackCarousel = ({ feedbacks }) => {
 
 // HomePage Component
 const HomePage = () => {
-  const navigate = useNavigate(); // Added for navigation
-  const token = Cookies.get('access_token'); // Added for token check
-  const openModalFromNavbarRef = useRef(null); // Use ref to persist function
+  const navigate = useNavigate();
+  const token = Cookies.get('access_token');
+  const openModalFromNavbarRef = useRef(null);
   const securityLockText = useTypingAnimation("SECURITY LOCK", 150, 2000, true);
+  const videoRef = useRef(null); // Ref for promo video
+  const globeVideoRef = useRef(null); // Ref for globe video
+  const videoSectionRef = useRef(null);
+  const heroSectionRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(true); // State for promo video mute toggle
 
-  // Reference to store the openModal function from HomeNavbar
   let openModalFromNavbar;
 
-  // Function to receive openModal from HomeNavbar
   const handleOpenModalFromNavbar = (openModalFunc) => {
-    openModalFromNavbar = openModalFunc; // Store the function reference
+    openModalFromNavbar = openModalFunc;
   };
 
   const handleGotoDashboardClick = () => {
@@ -169,13 +168,57 @@ const HomePage = () => {
       navigate('/dashboard');
     } else {
       if (openModalFromNavbar) {
-        openModalFromNavbar("Sign-in"); // Trigger the sign-in popup
+        openModalFromNavbar("Sign-in");
       } else {
-        // Fallback in case the modal function isn’t available (optional)
         navigate('/dashboard');
       }
     }
   };
+
+  // Handle video playback on hover for promo video
+  const handleMouseEnter = () => {
+    if (videoRef.current) {
+      videoRef.current.play().catch((error) => {
+        console.error("Error playing promo video:", error);
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+  };
+
+  // Toggle mute/unmute for promo video
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(videoRef.current.muted);
+    }
+  };
+
+  // Pause promo video when section is out of viewport
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting && videoRef.current) {
+          videoRef.current.pause();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (videoSectionRef.current) {
+      observer.observe(videoSectionRef.current);
+    }
+
+    return () => {
+      if (videoSectionRef.current) {
+        observer.unobserve(videoSectionRef.current);
+      }
+    };
+  }, []);
 
   const features = [
     { name: "Threat Intelligence", img: Link0, description: "Stay ahead of evolving cyber threats with real-time intelligence." },
@@ -351,7 +394,7 @@ const HomePage = () => {
       });
     }, 4000);
 
-    return () => clearInterval(interval); // cleanup on unmount
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -362,7 +405,7 @@ const HomePage = () => {
       selectedCard &&
       typeof selectedCard.scrollIntoView === "function"
     ) {
-      const scrollContainer = selectedCard.parentElement?.parentElement; // Assuming two wrapper divs
+      const scrollContainer = selectedCard.parentElement?.parentElement;
       if (scrollContainer) {
         scrollContainer.scrollTo({
           left: selectedCard.offsetLeft - scrollContainer.offsetWidth / 2 + selectedCard.offsetWidth / 2,
@@ -372,12 +415,40 @@ const HomePage = () => {
     }
   }, [currentFeatureIndex]);
 
+  useEffect(() => {
+  const video = globeVideoRef.current;
+
+  // Ensure video plays on load
+  const handlePlay = () => {
+    video.play().catch((err) => console.error("Autoplay failed:", err));
+  };
+
+  // Smooth looping by resetting time to 0 when video ends
+  const handleEnded = () => {
+    video.currentTime = 0; // Reset to start
+    video.play(); // Immediately replay
+  };
+
+  if (video) {
+    video.addEventListener('loadeddata', handlePlay);
+    video.addEventListener('ended', handleEnded);
+  }
+
+  // Cleanup event listeners on component unmount
+  return () => {
+    if (video) {
+      video.removeEventListener('loadeddata', handlePlay);
+      video.removeEventListener('ended', handleEnded);
+    }
+  };
+}, [globeVideoRef]);
+
   return (
     <div className="w-full">
       <HomeNavbar
         securityFeatures={securityFeatures}
         setSelectedFeature={setSelectedFeature}
-        openModalFromParent={handleOpenModalFromNavbar} // Added to receive openModal
+        openModalFromParent={handleOpenModalFromNavbar}
       />
 
       {/* Hero Section */}
@@ -386,102 +457,96 @@ const HomePage = () => {
         data-bg="blue"
         className="relative bg-royalBlue text-white h-screen flex items-center text-left px-6"
         style={{ backgroundImage: `url(${gridbackground})`, backgroundSize: "cover", backgroundPosition: "center" }}
+        ref={heroSectionRef}
       >
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center w-full">
-          {/* Left Text Content */}
           <div className="max-w-2xl md:pr-4 flex flex-col justify-center">
             <h1 className="text-3xl md:text-3xl font-extrabold text-white mb-4 leading-tight">
               GLOBAL <span className="text-[#A22323]">{securityLockText}</span>
             </h1>
-
             <p className="text-white text-lg mb-8">
               Protect your online world with strong{" "}
               <span className="text-[#A22323] font-bold">CYBER SECURITY</span>, keeping data safe from threats. 
               Easy training, regular updates, and constant monitoring ensure quick, reliable recovery.
             </p>
-
             <div className="flex justify-between w-full max-w-sm">
               <button
                 className="bg-[#e5e5e5] border border-black text-black font-semibold py-2 px-6 relative"
-                style={{
-                  clipPath: 'polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%)'
-                }}
+                style={{ clipPath: 'polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%)' }}
                 onClick={() => navigate('/threatmap2')}
               >
                 Threat Map
               </button>
-
               <button
                 className="bg-[#e5e5e5] border border-black text-black font-semibold py-2 px-6 relative"
-                style={{
-                  clipPath: 'polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%)'
-                }}
+                style={{ clipPath: 'polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%)' }}
                 onClick={handleGotoDashboardClick}
               >
                 Go to Dashboard
               </button>
             </div>
           </div>
-
-          {/* Right Lock Image */}
-          <div className="flex-shrink-0 mt-8 md:mt-0 md:ml-8">
-            <img
-              src={lockImage}
-              alt="Lock"
-              className="w-[450px] md:w-[580px] lg:w-[800px] h-auto object-contain"
-            />
+          <div className="flex-shrink-0 mt-8 md:mt-0 md:ml-8 relative z-20">
+            <video
+              ref={globeVideoRef}
+              src={globeVideo} // Use the imported globeVideo variable
+              autoPlay
+              loop
+              muted
+              className="w-[450px] md:w-[580px] lg:w-[800px] h-full p-1 object-contain"
+              onError={(e) => console.error("Video load error:", e)}
+            >
+              <source src={globeVideo} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
       <section
-  id="features"
-  data-bg="white"
-  className="h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-white px-6"
->
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-6xl">
-    {features.map((feature, index) => (
-      <div
-        key={index}
-        className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-100 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl  relative overflow-hidden"
+        id="features"
+        data-bg="white"
+        className="h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-50 to-white px-6"
       >
-        {/* Decorative Overlay */}
-        <div className="absolute top-0 left-0 w-16 h-16  opacity-10 rounded-br-full transform translate-y-1/4 -translate-x-1/4 z-0"></div>
-        <div className="relative z-10">
-          <div className="mb-6 flex justify-center">
-            <img
-              src={feature.img}
-              alt={feature.name}
-              className="w-[280px] h-[280px] object-contain rounded-xl transition-transform duration-300 hover:rotate-3"
-            />
-          </div>
-          <h3 className="text-2xl font-bold mb-4 text-gray-800 bg-gradient-to-r from-[#015265] to-teal-600 bg-clip-text text-transparent">
-            {feature.name}
-          </h3>
-          <p className="text-gray-600 leading-relaxed text-base">
-            {feature.description}
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-6xl">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-100 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-16 h-16 opacity-10 rounded-br-full transform translate-y-1/4 -translate-x-1/4 z-0"></div>
+              <div className="relative z-10">
+                <div className="mb-6 flex justify-center">
+                  <img
+                    src={feature.img}
+                    alt={feature.name}
+                    className="w-[280px] h-[280px] object-contain rounded-xl transition-transform duration-300 hover:rotate-3"
+                  />
+                </div>
+                <h3 className="text-2xl font-bold mb-4 text-gray-800 bg-gradient-to-r from-[#015265] to-teal-600 bg-clip-text text-transparent">
+                  {feature.name}
+                </h3>
+                <p className="text-gray-600 leading-relaxed text-base">
+                  {feature.description}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
-    ))}
-  </div>
-</section>
+      </section>
 
       {/* About Us Section */}
-      <section className="relative w-full h-screen flex overflow-hidden bg-[#D9D9D9]"
-       id="features">
-        {/* Left Content */}
+      <section
+        className="relative w-full h-screen flex overflow-hidden bg-[#D9D9D9]"
+        id="about-us" // Changed to avoid ID conflict with Features section
+      >
         <div className="w-full md:w-1/2 px-8 md:px-6 flex flex-col justify-center z-10">
           <h2 className="text-[#B1382B] font-bold uppercase mb-8 text-4xl">ABOUT US</h2>
-
-          {/* Heading — allow wrap, no scroll */}
           <h1 className="text-[1.9rem] md:text-4xl font-bold mb-4 text-black">
             We provide cutting-edge cybersecurity solutions.
           </h1>
-
           <p className="text-gray-700 mb-6">
             We deliver advanced cybersecurity solutions to protect your business from evolving digital threats.
           </p>
@@ -501,49 +566,75 @@ const HomePage = () => {
             ))}
           </ul>
         </div>
-
-        {/* Right Side with BOTTOM-RIGHT Quarter Circle */}
         <div className="hidden md:block w-1/2 h-full relative bg-transparent">
-          {/* Quarter Circle */}
           <div className="absolute bottom-0 right-0 w-[550px] h-[650px] bg-[#015265] rounded-tl-full z-0"></div>
-
-          {/* Centered Image and Text */}
           <div className="absolute bottom-[180px] right-[180px] flex flex-col items-center z-10">
             <img
               src="/ab2.jpg.png"
               alt="Bluhawk Eagle"
               className="w-[1000px] drop-shadow-xl block align-bottom p-3 m-0"
-              style={{display: 'block', marginBottom: '0', paddingBottom: 0}}
+              style={{ display: 'block', marginBottom: '0', paddingBottom: 0 }}
               draggable="false"
             />
-            <h1 className="text-white text-2xl md:text-2xl font-bold mt-[-20px] mb-0 leading-none p-0" style={{lineHeight: 1}}>
+            <h1 className="text-white text-2xl md:text-2xl font-bold mt-[-20px] mb-0 leading-none p-0" style={{ lineHeight: 1 }}>
               BLUHAWK
             </h1>
           </div>
         </div>
       </section>
 
+      {/* Video Section */}
+      <section
+        id="video-section"
+        data-bg="gray"
+        className="py-5 px-0 flex flex-col items-center bg-[#D9D9D9] w-full"
+        ref={videoSectionRef}
+      >
+        <h2 className="text-3xl font-bold text-[#9B4D4D] mb-4 text-center">
+          Our Cybersecurity Mission
+        </h2>
+        <p className="text-gray-800 mb-8 text-center max-w-2xl">
+          Watch how BluHawk protects your digital world with cutting-edge cybersecurity solutions.
+        </p>
+        <div className="w-full max-w-9xl mx-auto relative">
+          <video
+            ref={videoRef}
+            src={promoVideo}
+            muted={isMuted}
+            className="w-full rounded-lg shadow-lg"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            Your browser does not support the video tag.
+          </video>
+          <button
+            onClick={toggleMute}
+            className="absolute bottom-4 right-4 bg-[#015265] p-6 rounded-full shadow-lg hover:bg-[#013c4a] transition-colors"
+            aria-label={isMuted ? "Unmute video" : "Mute video"}
+          >
+            {isMuted ? (
+              <FaVolumeMute className="w-6 h-6 text-white" />
+            ) : (
+              <FaVolumeUp className="w-6 h-6 text-white" />
+            )}
+          </button>
+        </div>
+      </section>
+
       {/* Services Section */}
       <section
         id="services"
-        data-bg ="blue"
+        data-bg="blue"
         className="h-screen flex flex-col items-center justify-center text-white px-6 bg-cover bg-center relative"
         style={{ backgroundImage: "url('/bg.jpg')" }}
       >
-        {/* Overlay */}
         <div className="absolute inset-0 bg-midnightBlue bg-opacity-90"></div>
-
-        {/* Content */}
         <div className="relative z-10 text-center">
           <h2 className="text-4xl font-bold mb-6">Our Services</h2>
           <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-            BluHawk offers advanced solutions to detect, analyze, and prevent
-            cyber threats.
+            BluHawk offers advanced solutions to detect, analyze, and prevent cyber threats.
           </p>
-
-          {/* Service Blocks */}
           <div className="grid gap-6">
-            {/* First Row (3 Items) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {services.map((service, index) => (
                 <div
@@ -559,8 +650,6 @@ const HomePage = () => {
                 </div>
               ))}
             </div>
-
-            {/* Second Row (2 Items - Centered) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center w-full md:w-2/3 mx-auto">
               {secondRowServices.map((service, index) => (
                 <div
@@ -576,8 +665,6 @@ const HomePage = () => {
                 </div>
               ))}
             </div>
-
-            {/* Third Row (3 Items) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {thirdRowServices.map((service, index) => (
                 <div
@@ -603,9 +690,8 @@ const HomePage = () => {
         data-bg="white"
         className="h-screen w-full overflow-y-auto bg-white"
       >
-        {/* Security Features Section */}
         <div className="flex flex-col md:flex-row overflow-x-auto snap-x snap-mandatory justify-center w-full mt-12 px-12 py-8 pt-12">
-          <div className="flex overflow-x max-w-[80%] space-x-4 pb-4 px-4 mx mx-auto scrollbar-hide ">
+          <div className="flex overflow-x max-w-[80%] space-x-4 pb-4 px-4 mx-auto scrollbar-hide">
             <div className="shrink-0 w-[calc(50%-50px)] md:hidden" />
             {securityFeatures.map((feature, index) => (
               <div
@@ -614,7 +700,7 @@ const HomePage = () => {
                 onClick={() => {
                   setSelectedFeature(feature);
                   setCurrentFeatureIndex(index);
-                  pauseUntilRef.current = Date.now() + 10000; // Pause for 10 seconds
+                  pauseUntilRef.current = Date.now() + 10000;
                   if (window.innerWidth < 768) {
                     cardRefs.current[index]?.scrollIntoView({
                       behavior: "smooth",
@@ -631,8 +717,8 @@ const HomePage = () => {
                 <img
                   src={
                     selectedFeature.name === feature.name
-                      ? feature.pic // White version when selected
-                      : feature.img // Orange version when not selected
+                      ? feature.pic
+                      : feature.img
                   }
                   alt={feature.name}
                   className="w-10 h-10"
@@ -649,8 +735,6 @@ const HomePage = () => {
             <div className="shrink-0 w-[calc(60%-10px)] md:hidden" />
           </div>
         </div>
-
-        {/* Content Section */}
         <div className="flex justify-center items-center px-4 mt-4">
           <div className="flex flex-col md:flex-row items-center gap-6 max-w-4xl mx-auto">
             <img
@@ -680,7 +764,7 @@ const HomePage = () => {
       {/* Feedback and Testimonials Section */}
       <FeedbackCarousel feedbacks={feedbacks} />
 
-      {/* CEO's Words Section with Gap */}
+      {/* CEO's Words Section */}
       <section className="bg-[#015265] py-16 px-0 flex flex-col items-center w-full relative my-16">
         <div className="w-full">
           <div

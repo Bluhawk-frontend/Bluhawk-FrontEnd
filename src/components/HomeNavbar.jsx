@@ -253,7 +253,7 @@ export default function HomeNavbar({ securityFeatures, setSelectedFeature, openM
           className="h-10 w-auto min-w-[40px] md:h-12" // Adjusted height for responsiveness
           onError={(e) => {
             console.error("Failed to load logo:", e.target.src);
-            e.target.src = "/fallback-logo.png"; // Ensure fallback exists
+            e.target.src = "/bluhawk-blackbg.png"; // Ensure  exists
           }}
         />
       </button>
