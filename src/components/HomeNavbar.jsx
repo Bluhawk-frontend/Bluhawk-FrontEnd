@@ -255,8 +255,11 @@ export default function HomeNavbar({ securityFeatures, setSelectedFeature, openM
             console.error("Failed to load logo:", e.target.src);
             e.target.src = "/bluhawk-blackbg.png"; // Ensure  exists
           }}
+          
         />
+      
       </button>
+        <h1 className="text-cyan-900 p-1 px-3 text-2xl font-bold">BLUHAWK</h1>
     </div>
 
     {/* Center Section: Navigation (Hidden on small screens) */}
