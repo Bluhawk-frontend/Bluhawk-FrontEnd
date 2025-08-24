@@ -34,7 +34,7 @@ export default function Navbar() {
               className="h-10 w-auto min-w-[40px] md:h-12"
               onError={(e) => {
                 console.error("Failed to load logo:", logoSrc);
-                e.target.src = "/fallback-logo.png";
+                e.target.src = "/bluhawk-blackbg.png";
               }}
             />
           </button>

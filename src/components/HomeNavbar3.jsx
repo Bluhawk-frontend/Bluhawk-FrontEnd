@@ -54,7 +54,7 @@ export default function HomeNavbar3({ openModalFromParent }) { // Added prop
   return (
     <header className="w-full fixed top-0 bg-gradient-to-r from-[#0a0a1a] to-[#0d0d2b] px-6 py-4 flex items-center justify-between text-white z-50 shadow-md">
       <div className="flex items-center gap-3">
-        <img src="/bluehawk-w.png" alt="logo" className="h-12 w-auto" />
+        <img src="/bluhawk-blackbg.png" alt="logo" className="h-12 w-auto" />
       </div>
 
       <div className="hidden md:flex items-center bg-[#161636] px-4 py-2 rounded-full">

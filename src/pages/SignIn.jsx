@@ -251,7 +251,7 @@ const SignIn = ({ isOpen, setModalContent }) => {
               className="h-14 w-auto"
               onError={(e) => {
                 console.error("Failed to load logo:", LogoSrc);
-                e.target.src = "/fallback-logo.png";
+                e.target.src = "/bluhawk-blackbg.png";
               }}
             />
             <h2 className="text-small font-semibold mb-2 text-gray-800 py-2">

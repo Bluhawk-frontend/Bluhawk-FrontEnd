@@ -23,7 +23,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 bg-primaryDarkBlue  z-50  text-white sm:px-2  py-5 flex justify-between items-center">
         <div className="flex justify-center items-center gap-6">
-          <a href='/'> <img src="/bluehawk-w.png" alt="logo" className='max-h-[100px] max-w-[100px]'/>
+          <a href='/'> <img src="/bluhawk-blackbg.png" alt="logo" className='max-h-[100px] max-w-[100px]'/>
           </a>
          
           <nav className="flex gap-6">
