@@ -204,7 +204,7 @@ const SignUp = ({ isOpen, setModalContent }) => {
 
    const renderInputField = (id, label, showPasswordState, toggleFunction, type = "text", placeholder = "") => (
   <div className="relative">
-    <label htmlFor={id} className="block text-white text-sm mb-1">
+    <label htmlFor={id} className="block text-black text-sm mb-1">
       {label}:
     </label>
     <div className="relative">
@@ -213,7 +213,7 @@ const SignUp = ({ isOpen, setModalContent }) => {
         id={id}
         value={formData[id]}
         onChange={handleInputChange}
-        className="w-full px-4 py-2 border border-white text-sm text-white bg-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-[#00b7ff] placeholder-gray-300"
+        className="w-full px-4 py-2 border border-[#033A72] text-sm text-[#033A72] bg-transparent rounded-full focus:outline-none focus:ring-2 focus:ring-[#033A72] placeholder-gray-300"
         placeholder={placeholder}
       />
       {(id === "password" || id === "reenter_password") && (
@@ -244,7 +244,7 @@ const SignUp = ({ isOpen, setModalContent }) => {
     >
       <div className="h-[600px] w-[800px] text-black relative flex justify-center items-center max-w-4xl sm:max-w-4xl">
         <div className="absolute inset-0 bg-black bg-opacity-50 z-0"></div> {/* Overlay for readability */}
-         <div className="w-[400px] sm:w-[420px] p-8 bg-[#083c70] border border-white rounded-md shadow-lg relative z-10 text-white">
+         <div className="w-[400px] sm:w-[420px] p-8 bg-[#FDFDFF] border border-white rounded-md shadow-lg relative z-10 text-black">
   <div className="mb-6">
     <img
       src={LogoSrc}
@@ -277,7 +277,7 @@ const SignUp = ({ isOpen, setModalContent }) => {
     <button
       ref={signUpButtonRef}
       type="submit"
-      className="w-full bg-[#e60073] text-white py-2 rounded-full hover:bg-pink-600 transition text-lg font-semibold"
+      className="w-full bg-[#033A72] text-white py-2 rounded-full  transition text-lg font-semibold"
       disabled={loading}
     >
       {loading ? (
@@ -305,7 +305,7 @@ const SignUp = ({ isOpen, setModalContent }) => {
       {isOpen ? (
         <span
           onClick={() => setModalContent("Sign-in")}
-          className="text-pink-400 cursor-pointer hover:underline"
+          className="text-[#033A72] cursor-pointer hover:underline"
         >
           Login
         </span>

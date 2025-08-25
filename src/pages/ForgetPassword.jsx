@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import LogoSrc from "../assets/images/bluehawk-dark.png";
-import loginimg from "../assets/images/Getin.png"; // Login image
+import loginimg from "../assets/images/Getin.jpg"; // Login image
 
 
 const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
