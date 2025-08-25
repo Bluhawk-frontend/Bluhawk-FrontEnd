@@ -228,19 +228,20 @@ const HomePage = () => {
 
   const services = [
     { name: "Network Security", img: Group3 },
-    { name: "Adversary Intelligence", img: Group1 },
+    { name: "Threat Prioritization", img: Group6 },
     { name: "Vulnerability Intelligence", img: Group2 },
   ];
 
   const secondRowServices = [
-    { name: "Real-Time Monitoring", img: Group4 },
+    { name: "Automated Scanning", img: Group7 },
     { name: "Asset Analysis", img: Group5 },
   ];
 
   const thirdRowServices = [
-    { name: "Threat Prioritization", img: Group6 },
-    { name: "Automated Scanning", img: Group7 },
+    { name: "Real-Time Monitoring", img: Group4 },
     { name: "MITRE ATT&CK Mapping", img: Group8 },
+    { name: "Adversary Intelligence", img: Group1 },
+
   ];
 
   const feedbacks = [
@@ -279,47 +280,6 @@ const HomePage = () => {
       ],
     },
     {
-      name: "Adversary Intelligence",
-      img: Group1,
-      pic: white2,
-      contentImg: F2,
-      description: "BluHawk's Adversary Intelligence provides the critical insights you need to stay ahead of cybercriminals and protect your organization from evolving threats. Explore the depth of adversary intel and fortify your defenses today.",
-      details: [
-        "Strengthen security posture with in-depth adversary knowledge.",
-        "Proactively defend against emerging threats.",
-        "Improve incident response and threat hunting capabilities.",
-        "Gain a competitive edge in cybersecurity defense.",
-      ],
-    },
-    {
-      name: "Vulnerability Intelligence",
-      img: Group2,
-      pic: white3,
-      contentImg: F3,
-      description: "In today's fast-paced digital landscape, vulnerabilities are constantly being discovered and exploited. BluHawk's Vulnerability Intelligence provides real-time insights into actively exploited weaknesses, enabling you to proactively identify and mitigate risks before they can be exploited.",
-      details: [
-        "Reduce your attack surface by addressing vulnerabilities.",
-        "Minimize the risk of data breaches.",
-        "Improve security posture with timely remediation.",
-        "Enhance defense strategies with up-to-the-minute threat data.",
-      ],
-    },
-    {
-      name: "Real-Time Monitoring",
-      img: Group4,
-      pic: white4,
-      contentImg: F4,
-      description: "In today's dynamic threat landscape, waiting for scheduled scans or reports is no longer sufficient. BluHawk's Real-Time Monitoring provides continuous surveillance of your digital assets, enabling you to detect and respond to threats as they emerge.",
-      details: [
-        "Continuous Threat Detection: Immediate analysis of activity.",
-        "Instant Alerting: Rapid notifications of security events.",
-        "Dynamic Threat Updates: Real-time vulnerability and attack info.",
-        "Anomaly Detection: Identifies unusual patterns.",
-        "Log Correlation: Unified analysis of security logs.",
-        "Custom Dashboards: Personalized real-time data views.",
-      ],
-    },
-    {
       name: "Asset Analysis",
       img: Group5,
       pic: white5,
@@ -332,6 +292,19 @@ const HomePage = () => {
         "Network Exposure: Open ports, misconfigurations found.",
         "Subdomain Discovery: Uncover hidden entry points.",
         "Certificate Analysis: Verify certificate security.",
+      ],
+    },
+    {
+      name: "Adversary Intelligence",
+      img: Group1,
+      pic: white2,
+      contentImg: F2,
+      description: "BluHawk's Adversary Intelligence provides the critical insights you need to stay ahead of cybercriminals and protect your organization from evolving threats. Explore the depth of adversary intel and fortify your defenses today.",
+      details: [
+        "Strengthen security posture with in-depth adversary knowledge.",
+        "Proactively defend against emerging threats.",
+        "Improve incident response and threat hunting capabilities.",
+        "Gain a competitive edge in cybersecurity defense.",
       ],
     },
     {
@@ -348,6 +321,19 @@ const HomePage = () => {
       ],
     },
     {
+      name: "Vulnerability Intelligence",
+      img: Group2,
+      pic: white3,
+      contentImg: F3,
+      description: "In today's fast-paced digital landscape, vulnerabilities are constantly being discovered and exploited. BluHawk's Vulnerability Intelligence provides real-time insights into actively exploited weaknesses, enabling you to proactively identify and mitigate risks before they can be exploited.",
+      details: [
+        "Reduce your attack surface by addressing vulnerabilities.",
+        "Minimize the risk of data breaches.",
+        "Improve security posture with timely remediation.",
+        "Enhance defense strategies with up-to-the-minute threat data.",
+      ],
+    },
+    {
       name: "Automated Scanning",
       img: Group7,
       pic: white7,
@@ -359,6 +345,21 @@ const HomePage = () => {
         "Ensure continuous monitoring of digital assets.",
         "Improve your security posture and reduce the risk of cyberattacks.",
         "Gain comprehensive visibility into your organization's security vulnerabilities.",
+      ],
+    },
+    {
+      name: "Real-Time Monitoring",
+      img: Group4,
+      pic: white4,
+      contentImg: F4,
+      description: "In today's dynamic threat landscape, waiting for scheduled scans or reports is no longer sufficient. BluHawk's Real-Time Monitoring provides continuous surveillance of your digital assets, enabling you to detect and respond to threats as they emerge.",
+      details: [
+        "Continuous Threat Detection: Immediate analysis of activity.",
+        "Instant Alerting: Rapid notifications of security events.",
+        "Dynamic Threat Updates: Real-time vulnerability and attack info.",
+        "Anomaly Detection: Identifies unusual patterns.",
+        "Log Correlation: Unified analysis of security logs.",
+        "Custom Dashboards: Personalized real-time data views.",
       ],
     },
     {
@@ -598,7 +599,7 @@ const HomePage = () => {
         id="services"
         data-bg="blue"
         className="h-screen flex flex-col items-center justify-center text-white px-6 bg-cover bg-center relative"
-        style={{ backgroundImage: "url('/bg.jpg')" }}
+        style={{ backgroundImage: "url('/services-bg.jpg')" }}
       >
         <div className="absolute inset-0 bg-midnightBlue bg-opacity-90"></div>
         <div className="relative z-10 text-center">
