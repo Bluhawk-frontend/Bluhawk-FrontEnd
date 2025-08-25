@@ -10,7 +10,7 @@ const PopupModal = ({ isOpen, onClose, children }) => {
       <div className="relative w-full max-w-[800px] h-auto max-h-[90vh] bg-red-200 flex flex-col sm:flex-row shadow-lg rounded-lg overflow-hidden">
         <button
           onClick={onClose}
-          className="absolute top-2 right-2  z-50 text-white hover:text-black hover:bg-gray-200 hover:rounded-full p-2"
+          className="absolute top-2 right-2  z-50 text-black hover:text-black hover:bg-[#033A72] hover:rounded-full p-2"
         >
           <IoClose size={20} />
         </button>
