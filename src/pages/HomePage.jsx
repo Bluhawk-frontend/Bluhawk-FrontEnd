@@ -435,7 +435,7 @@ const HomePage = () => {
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center w-full">
           <div className="max-w-2xl md:pr-4 flex flex-col justify-center">
-            <h1 className="text-3xl md:text-3xl font-extrabold text-white mb-4 leading-tight">
+            <h1 className="text-5xl md:text-3xl font-extrabold text-white mb-4 leading-tight">
               GLOBAL <span className="text-[#A22323]">{securityLockText}</span>
             </h1>
             <p className="text-white text-lg mb-8">

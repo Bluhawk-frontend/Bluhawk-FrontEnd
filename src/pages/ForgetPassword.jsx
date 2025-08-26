@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import LogoSrc from "../assets/images/bluehawk-dark.png";
 import loginimg from "../assets/images/Getin.jpg"; // Login image
 
-
 const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [email, setEmail] = useState("");
@@ -15,7 +14,7 @@ const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // ⬅️ move this here to prevent default form behavior
+    e.preventDefault(); // ⬅️ prevent default form behavior
 
     if (!email) {
       setErrorsMsg("Please enter your email.");
@@ -25,8 +24,7 @@ const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
       return;
     }
 
-    e.preventDefault();
-    setLoading(true); // Set loading to true
+    setLoading(true);
     try {
       const response = await axios.post(
         `${API_BASE_URL}/auth/forgotten_password`,
@@ -34,17 +32,14 @@ const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
       );
       setMessage(response.data.message);
       setLoading(false);
-      // navigate('/reset-password');  // Redirect to Reset Password page after successful request
+      // navigate('/reset-password');
     } catch (error) {
       console.log("Forget Password error : ", error);
-      // if(error?.message != undefined){
-      // setMessage('Error: ' + error?.message);
-      // }
       setMessage(
         "Error: " +
           (error?.response?.data?.message || error?.message || "Error occured.")
       );
-      setLoading(false); // Set loading to false after failure
+      setLoading(false);
     }
   };
 
@@ -55,47 +50,62 @@ const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
           isOpen ? "" : "h-screen"
         } flex justify-center items-center bg-[#010314]`}
       >
-        <div className=" h-[500px] w-[800px] bg-lightWhite flex shadow-lg rounded-lg overflow-hidden  max-w-4xl sm:max-w-4xl text-black">
-          {/* Left Section: Forget Password Form */}
-          <div className="w-full p-8 flex flex-col">
-            <div>
+        <div className="h-[500px] w-[800px] bg-lightWhite flex shadow-lg rounded-lg overflow-hidden max-w-4xl sm:max-w-4xl text-black">
+          
+          {/* Left Section: Illustration (now first) */}
+          <div className="w-full bg-deepNavy sm:flex hidden items-center justify-center">
             <img
-              src={LogoSrc} 
-              alt="BluHawk Logo"
-              className="h-14 w-auto"
-              onError={(e) => {
-                console.error("Failed to load logo:", LogoSrc);
-                e.target.src = "/bluhawk-blackbg.png"; // Fallback image
-              }}
+              src={loginimg}
+              alt="Login Image"
+              className="inset-0 w-full h-full object-cover"
             />
-            <h2 className="text-xl font-semibold mb-2 text-gray-800 py-2">
-              Forgot Password?
-            </h2>
-            <p className="text-gray-800 text-sm mb-6">
-              Enter your registered email address below, and we'll send you a
-              verification link.
-            </p>
-            {errorsMsg && (
-              <p className="text-red-500 text-sm pb-2">{errorsMsg}</p>
-            )}
-            {message && (
-              <p
-                className={`${
-                  message.includes("Error") ? "text-red-500" : "text-green-500"
-                } text-sm pb-2`}
-              >
-                {message}
+          </div>
+
+          {/* Right Section: Forget Password Form */}
+          <div className="w-full p-8 flex flex-col">
+            <div className="flex flex-col items-center text-center">
+              <img
+                src={LogoSrc}
+                alt="BluHawk Logo"
+                className="h-14 w-auto mb-4"
+                onError={(e) => {
+                  console.error("Failed to load logo:", LogoSrc);
+                  e.target.src = "/bluhawk-blackbg.png"; // Fallback image
+                }}
+              />
+              <h2 className="text-xl font-semibold mb-2 text-gray-800">
+                Forgot Password?
+              </h2>
+              <p className="text-gray-800 text-sm mb-6 max-w-sm">
+                Enter your registered email address below, and we'll send you a
+                verification link.
               </p>
-            )}
+              {errorsMsg && (
+                <p className="text-red-500 text-sm pb-2">{errorsMsg}</p>
+              )}
+              {message && (
+                <p
+                  className={`${
+                    message.includes("Error")
+                      ? "text-red-500"
+                      : "text-green-500"
+                  } text-sm pb-2`}
+                >
+                  {message}
+                </p>
+              )}
             </div>
-            <form   onSubmit={handleSubmit}  className=" flex flex-col flex-1 justify-between">
+
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col flex-1 justify-between"
+            >
               {/* Email Input */}
               <div className="mb-4">
                 <label
                   htmlFor="email"
                   className="block text-gray-800 text-sm font-medium mb-2"
                 >
-                  {" "}
                   Email :
                 </label>
                 <input
@@ -106,7 +116,7 @@ const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
                     setErrorsMsg(""),
                     setMessage(""),
                   ]}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#033A72]"
                   placeholder="Enter your email"
                 />
               </div>
@@ -115,7 +125,7 @@ const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="w-full bg-denimBlue text-white py-2 rounded-md hover:bg-blue-700 transition"
+                  className="w-full bg-[#033A72] text-white py-2 rounded-md "
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">
@@ -130,8 +140,8 @@ const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
                   <p className="mt-2 text-sm text-center text-gray-800">
                     Remember your password?{" "}
                     <span
-                      onClick={() => setModalContent("Sign-in")} // ✅ Only update content
-                      className="text-[#FE5E15] cursor-pointer hover:underline"
+                      onClick={() => setModalContent("Sign-in")}
+                      className="text-[#033A72] cursor-pointer hover:underline"
                     >
                       Login
                     </span>
@@ -139,7 +149,10 @@ const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
                 ) : (
                   <p className="text-sm text-center text-gray-600 mt-2">
                     Remember your password?{" "}
-                    <Link to="/login" className="text-[#FE5E15] hover:underline">
+                    <Link
+                      to="/login"
+                      className="text-[#033A72] hover:underline"
+                    >
                       Login
                     </Link>
                   </p>
@@ -147,11 +160,6 @@ const ForgotPassword = ({ setModalContent = "Sign-in", isOpen }) => {
               </div>
             </form>
           </div>
-          {/* Right Section: Illustration */}
-          <div className="w-full bg-deepNavy flex items-center justify-center sm:block hidden">
-  <img src={loginimg} alt="Login Image" className="h-auto max-h-full w-auto max-w-full object-contain py-20" />
-</div>
-
         </div>
       </div>
     </>

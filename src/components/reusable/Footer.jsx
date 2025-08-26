@@ -104,7 +104,7 @@ export default function Footer() {
 
       {/* Copyright Section */}
       <div className="text-center text-sm py-4 bg-[#0a1122]">
-        Copyright © 2025 <span className="text-[#FE5E15]">BluHawk</span> All Rights Reserved
+        Copyright © 2025 <span className="text-[#9F4B4E]">BluHawk</span> All Rights Reserved
       </div>
 
       {/* Subscription Popup */}

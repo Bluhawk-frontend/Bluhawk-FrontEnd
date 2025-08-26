@@ -103,8 +103,8 @@ const SignIn = ({ isOpen, setModalContent }) => {
           <img
             src={loginimg}
             alt="Login"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
+            className=" inset-0 w-full h-full object-cover"
+          />absolute
         </div>
 
         {/* Form Section */}
